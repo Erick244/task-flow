@@ -26,17 +26,21 @@ public class Task {
 	
 	private Boolean isCompleted;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	private TaskColumn taskColumn;
+	
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	private User user;
 	
 	public Task() {
 	}
 	
-	public Task(@NotBlank String goal, String description, Boolean isCompleted, TaskColumn taskColumn) {
+	public Task(@NotBlank String goal, String description, Boolean isCompleted, TaskColumn taskColumn, User user) {
 		super();
 		this.goal = goal;
 		this.description = description;
 		this.taskColumn = taskColumn;		
+		this.user = user;
 		
 		if (isCompleted == null) isCompleted = false;
 		this.isCompleted = isCompleted;
@@ -74,8 +78,17 @@ public class Task {
 	public TaskColumn getTaskColumn() {
 		return taskColumn;
 	}
+	
+	public int getTaskColumnId() {
+		return taskColumn.getId();
+	}
 
 	public void setTaskColumn(TaskColumn taskColumn) {
 		this.taskColumn = taskColumn;
+	}
+	
+	@JsonIgnore
+	public User getUser() {
+		return user;
 	}
 }

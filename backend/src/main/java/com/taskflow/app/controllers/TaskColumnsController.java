@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.taskflow.app.models.dtos.TaskColumnCreateDto;
+import com.taskflow.app.models.dtos.taskColumns.SyncTaskColumnsDto;
+import com.taskflow.app.models.dtos.taskColumns.TaskColumnCreateDto;
 import com.taskflow.app.models.entities.TaskColumn;
 import com.taskflow.app.services.TaskColumnsService;
 
@@ -30,5 +31,15 @@ public class TaskColumnsController {
 	@GetMapping("/findAllByUserId/{userId}")
 	public ResponseEntity<Iterable<TaskColumn>> findAllByUserId(@PathVariable int userId) {
 		return this.taskColumnsService.findAllByUserId(userId);
+	}
+	
+	@PostMapping("/sync")
+	public ResponseEntity<Iterable<TaskColumn>> syncTaskColumns(@RequestBody SyncTaskColumnsDto syncTaskColumnsDto) {
+		return this.taskColumnsService.syncTaskColumns(syncTaskColumnsDto);
+	}
+	
+	@GetMapping("/findOne/{taskColumnId}")
+	public ResponseEntity<TaskColumn> findOne(@PathVariable int taskColumnId) {
+		return this.taskColumnsService.findOne(taskColumnId);
 	}
 }

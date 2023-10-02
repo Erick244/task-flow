@@ -1,0 +1,10 @@
+# Light Mode #
+text-neutral-600
+bg-neutral-300 - Background
+
+# Dark Mode #
+text-white
+dark:bg-neutral-700 - Background
+
+# All Mode #
+blue-500

@@ -9,9 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.taskflow.app.models.dtos.LoginDto;
-import com.taskflow.app.models.dtos.LoginResponseDto;
-import com.taskflow.app.models.dtos.SignUpDto;
+import com.taskflow.app.models.dtos.auth.LoginDto;
+import com.taskflow.app.models.dtos.auth.LoginResponseDto;
+import com.taskflow.app.models.dtos.auth.SignUpDto;
 import com.taskflow.app.models.entities.User;
 import com.taskflow.app.models.repositiories.UserRepository;
 

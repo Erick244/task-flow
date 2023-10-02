@@ -24,10 +24,10 @@ public class TaskColumn {
 	@NotBlank
 	private String title;
 	
-	@OneToMany(mappedBy = "taskColumn", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "taskColumn", cascade = CascadeType.PERSIST)
 	private List<Task> tasks = new ArrayList<>();
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	private User user;
 	
 	public TaskColumn() {}
@@ -42,14 +42,16 @@ public class TaskColumn {
 		tasks.add(task);
 	}
 	
-	public List<Task> getTasks() {
-		return tasks;
-	}
 
 	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks;
 	}
-
+	
+	@JsonIgnore
+	public int getUser_id() {
+		return user.getId();
+	}
+	
 	@JsonIgnore
 	public User getUser() {
 		return user;

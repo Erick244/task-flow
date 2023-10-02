@@ -22,8 +22,8 @@ public class JwtService {
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(secret);
 			
-			int sevenDaysInSeconds = 60 * 60 * 24 * 7;
-			Instant expiryTime = this.createExpiryTime(sevenDaysInSeconds);
+			int oneMounthInSeconds = 60 * 60 * 24 * 30;
+			Instant expiryTime = this.createExpiryTime(oneMounthInSeconds);
 			
 			String token = JWT.create()
 					.withIssuer("taskflow")

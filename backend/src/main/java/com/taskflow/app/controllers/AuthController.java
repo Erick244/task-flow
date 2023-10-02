@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.taskflow.app.models.dtos.LoginDto;
-import com.taskflow.app.models.dtos.LoginResponseDto;
-import com.taskflow.app.models.dtos.SignUpDto;
+import com.taskflow.app.models.dtos.auth.LoginDto;
+import com.taskflow.app.models.dtos.auth.LoginResponseDto;
+import com.taskflow.app.models.dtos.auth.SignUpDto;
 import com.taskflow.app.services.AuthService;
 
 import jakarta.validation.Valid;

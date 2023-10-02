@@ -35,8 +35,11 @@ public class User {
 	private String password;
 	
 	@Column(nullable = true)
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
 	private List<TaskColumn> taskColumns = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+	private List<Task> tasks;
 	
 	@Column(nullable = true)
 	private URL avatarUrl;

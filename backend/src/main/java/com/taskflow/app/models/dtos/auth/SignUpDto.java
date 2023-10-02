@@ -1,4 +1,4 @@
-package com.taskflow.app.models.dtos;
+package com.taskflow.app.models.dtos.auth;
 
 import java.net.URL;
 
