@@ -3,3 +3,5 @@ const TEMP_BEARER_TOKEN =
 const BASE_API_URL = "http://localhost:8080";
 
 export { BASE_API_URL, TEMP_BEARER_TOKEN };
+
+//TODO: Trocar por envs;

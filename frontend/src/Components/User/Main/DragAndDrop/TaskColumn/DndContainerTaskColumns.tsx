@@ -1,7 +1,7 @@
 "use client";
+import { filterTasksByTaskColumnId } from "@/functions/TasksFunctions";
 import { TaskModel } from "@/models/Task.model";
 import { TaskColumnModel } from "@/models/TaskColumn.model";
-import { filterTasksByTaskColumnId } from "@/utils/functions";
 import { SortableContext } from "@dnd-kit/sortable";
 import { useMemo } from "react";
 import DndTaskColumn from "./DndTaskColumn";

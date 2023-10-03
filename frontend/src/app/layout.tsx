@@ -1,5 +1,6 @@
 import Theme from "@/Components/Utils/Theme";
 import type { Metadata } from "next";
+import "react-toastify/dist/ReactToastify.css";
 import Providers from "./Providers";
 import "./globals.css";
 

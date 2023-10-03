@@ -1,5 +1,7 @@
 package com.taskflow.app.services;
 
+import java.net.URL;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,14 +33,24 @@ public class AuthService {
 	
 	
 	public ResponseEntity<?> singUp(SignUpDto signUpDto) {
-		Boolean existEmailInDatabase = userRepository.findByEmail(signUpDto.email()) != null;
+		String email = signUpDto.email();
+		String username = signUpDto.username();
+		String password = signUpDto.password();
+		String confirmPassword = signUpDto.confirmPassword();
+		URL avatarUrl = signUpDto.avatarUrl();
 		
-		if (existEmailInDatabase) {
-			return ResponseEntity.badRequest().body("This email is already being used.");
+		Boolean isEmailAlreadyUsed = userRepository.findByEmail(email) != null;
+		if (isEmailAlreadyUsed) {
+			return ResponseEntity.badRequest().body("This email is already being used");
 		}
 		
-		String passwordEncrypted = bCryptPasswordEncoder.encode(signUpDto.password());
-		User newUser = new User(signUpDto.username(), signUpDto.email(), passwordEncrypted, signUpDto.avatarUrl());
+		Boolean passwordsDontMatch = password == confirmPassword;
+		if (passwordsDontMatch) {
+			return ResponseEntity.badRequest().body("Passwords do not match");
+		}
+		
+		String passwordEncrypted = bCryptPasswordEncoder.encode(password);
+		User newUser = new User(username, email, passwordEncrypted, avatarUrl);
 		userRepository.save(newUser);
 		
 		return ResponseEntity.ok().build();
