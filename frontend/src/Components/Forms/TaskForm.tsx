@@ -2,8 +2,8 @@
 import { Form } from "@/Components/Templates/Form";
 import { PlusIcon, TrashIcon } from "@/Components/Utils/Icons";
 import { taskFormStateAtom } from "@/atomns/FormsAtoms";
-import { FormActions } from "@/models/FormActions.enum";
-import { stopClickPropagation } from "@/utils/functions";
+import { stopClickPropagation } from "@/functions/EventsFunctions";
+import { FormActions } from "@/models/enums/FormActions.enum";
 import { useAtom } from "jotai";
 
 export default function TaskForm() {

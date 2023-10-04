@@ -1,8 +1,8 @@
 "use client";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { DndTypes } from "@/models/DndTypes.enum";
-import { TaskModel } from "@/models/Task.model";
-import { TaskColumnModel } from "@/models/TaskColumn.model";
+import { TaskModel } from "@/models/entities/Task.model";
+import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
+import { DndTypes } from "@/models/enums/DndTypes.enum";
 import { BASE_API_URL, TEMP_BEARER_TOKEN } from "@/utils/constants";
 import {
     DragEndEvent,

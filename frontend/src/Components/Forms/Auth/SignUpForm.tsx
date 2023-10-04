@@ -2,6 +2,7 @@
 import { Form } from "@/Components/Templates/Form";
 import { AngleRightIcon } from "@/Components/Utils/Icons";
 import { useAuthContext } from "@/contexts/auth/AuthContext";
+import { SignInFormData } from "@/schemas/forms/signin-form.schema";
 import {
     SIGNUP_SCHEMA,
     SignupFormData,
@@ -10,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 export default function SignUpForm() {
     const {
@@ -76,8 +78,11 @@ export default function SignUpForm() {
                         label="Login"
                         className="px-5"
                     />
-                    <Form.SubmitButton label="Enter" icon={AngleRightIcon} />
-                    {loading && <span>Loading...</span>}
+                    <Form.SubmitButton
+                        label="Enter"
+                        icon={AngleRightIcon}
+                        isLoading={loading}
+                    />
                 </Form.ContainerButtons>
             </Form.Root>
         </Form.Container>
@@ -96,18 +101,28 @@ function useSignUpForm() {
         resolver: zodResolver(SIGNUP_SCHEMA),
     });
 
-    const { signUp } = useAuthContext();
+    const { signUp, signIn } = useAuthContext();
 
     function alternateForLoginForm() {
         push("/auth/login");
     }
 
     async function handleSignUp(signUpData: SignupFormData) {
-        setLoading(true);
+        try {
+            setLoading(true);
+            await signUp(signUpData);
 
-        await signUp(signUpData);
+            const signInData: SignInFormData = {
+                email: signUpData.email,
+                password: signUpData.password,
+            };
 
-        setLoading(false);
+            await signIn(signInData);
+        } catch (e: any) {
+            toast(e, { type: "warning", theme: "dark" });
+        } finally {
+            setLoading(false);
+        }
     }
 
     return {

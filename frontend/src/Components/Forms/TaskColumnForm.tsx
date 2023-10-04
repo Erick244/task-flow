@@ -3,7 +3,7 @@ import { Form } from "@/Components/Templates/Form";
 import { PlusIcon, TrashIcon } from "@/Components/Utils/Icons";
 import { taskColumnFormStateAtom } from "@/atomns/FormsAtoms";
 import { stopClickPropagation } from "@/functions/EventsFunctions";
-import { FormActions } from "@/models/FormActions.enum";
+import { FormActions } from "@/models/enums/FormActions.enum";
 import { useAtom } from "jotai";
 
 export default function TaskColumnForm() {

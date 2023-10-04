@@ -5,8 +5,8 @@ import CloseArea from "@/Components/Utils/CloseArea";
 import { MoreIcon } from "@/Components/Utils/Icons";
 import { taskColumnFormStateAtom } from "@/atomns/FormsAtoms";
 import useFloatMenu from "@/hooks/useFloatMenu";
-import { FormActions } from "@/models/FormActions.enum";
-import { TaskColumnModel } from "@/models/TaskColumn.model";
+import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
+import { FormActions } from "@/models/enums/FormActions.enum";
 import { useSetAtom } from "jotai";
 import { HTMLAttributes, Ref, forwardRef } from "react";
 

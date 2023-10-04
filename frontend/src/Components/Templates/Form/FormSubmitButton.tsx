@@ -1,14 +1,17 @@
+import { Spinner } from "@/Components/Utils/Spinner";
 import { HTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface FormSubmitButtonProps extends HTMLAttributes<HTMLButtonElement> {
     label: string;
     icon?: JSX.Element;
+    isLoading?: boolean;
 }
 
 export default function FormSubmitButton({
     label,
     icon,
+    isLoading,
     ...rest
 }: FormSubmitButtonProps) {
     return (
@@ -20,7 +23,13 @@ export default function FormSubmitButton({
                 rest.className
             )}
         >
-            {label} {icon && <i>{icon}</i>}
+            {isLoading ? (
+                <Spinner className="mx-2" />
+            ) : (
+                <>
+                    {label} {icon && <i>{icon}</i>}
+                </>
+            )}
         </button>
     );
 }

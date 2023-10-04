@@ -1,9 +1,9 @@
 "use client";
 import { taskFormStateAtom } from "@/atomns/FormsAtoms";
-import { DndTypes } from "@/models/DndTypes.enum";
-import { FormActions } from "@/models/FormActions.enum";
-import { TaskModel } from "@/models/Task.model";
-import { TaskColumnModel } from "@/models/TaskColumn.model";
+import { TaskModel } from "@/models/entities/Task.model";
+import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
+import { DndTypes } from "@/models/enums/DndTypes.enum";
+import { FormActions } from "@/models/enums/FormActions.enum";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useSetAtom } from "jotai";

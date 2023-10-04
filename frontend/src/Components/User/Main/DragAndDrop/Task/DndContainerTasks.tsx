@@ -1,5 +1,5 @@
 "use client";
-import { TaskModel } from "@/models/Task.model";
+import { TaskModel } from "@/models/entities/Task.model";
 import { SortableContext } from "@dnd-kit/sortable";
 import { useMemo } from "react";
 import DndTask from "./DndTask";

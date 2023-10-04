@@ -1,6 +1,6 @@
 "use client";
-import { DndTypes } from "@/models/DndTypes.enum";
-import { TaskModel } from "@/models/Task.model";
+import { TaskModel } from "@/models/entities/Task.model";
+import { DndTypes } from "@/models/enums/DndTypes.enum";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import ClientTask from "../../Task/ClientTask";

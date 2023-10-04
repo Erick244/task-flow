@@ -1,6 +1,4 @@
 "use client";
-import TaskColumnForm from "@/Components/Forms/TaskColumnForm";
-import TaskForm from "@/Components/Forms/TaskForm";
 import CloseArea from "@/Components/Utils/CloseArea";
 import {
     taskColumnFormStateAtom,
@@ -24,14 +22,14 @@ export default function MainLayoutMain({ children }: MainLayoutMainProps) {
                 isVisible={taskColumnFormIsVisible}
                 className="flex justify-center items-center"
             >
-                <TaskColumnForm />
+                {/* <TaskColumnForm /> */}
             </CloseArea>
 
             <CloseArea
                 isVisible={saveTaskFormIsVisible}
                 className="flex justify-center items-center"
             >
-                <TaskForm />
+                {/* <TaskForm /> */}
             </CloseArea>
 
             {children}

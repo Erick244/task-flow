@@ -1,6 +1,6 @@
 import { filterTasksByTaskColumnId } from "@/functions/TasksFunctions";
-import { TaskModel } from "@/models/Task.model";
-import { TaskColumnModel } from "@/models/TaskColumn.model";
+import { TaskModel } from "@/models/entities/Task.model";
+import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
 import { DragOverlay } from "@dnd-kit/core";
 import DndTask from "./Task/DndTask";
 import DndTaskColumn from "./TaskColumn/DndTaskColumn";

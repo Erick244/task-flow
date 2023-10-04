@@ -1,4 +1,4 @@
-import { TaskModel } from "@/models/Task.model";
+import { TaskModel } from "@/models/entities/Task.model";
 
 export function filterTasksByTaskColumnId(
     tasks: TaskModel[],

@@ -1,7 +1,7 @@
 "use client";
 import { taskColumnFormStateAtom } from "@/atomns/FormsAtoms";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
-import { FormActions } from "@/models/FormActions.enum";
+import { FormActions } from "@/models/enums/FormActions.enum";
 import { DndContext } from "@dnd-kit/core";
 import { useSetAtom } from "jotai";
 import AddTaskColumnButton from "../TaskColumn/AddTaskColumnButton";
