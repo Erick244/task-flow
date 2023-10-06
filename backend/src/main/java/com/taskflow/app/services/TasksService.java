@@ -13,7 +13,6 @@ import com.taskflow.app.models.entities.TaskColumn;
 import com.taskflow.app.models.entities.User;
 import com.taskflow.app.models.repositiories.TaskColumnRepository;
 import com.taskflow.app.models.repositiories.TaskRepository;
-import com.taskflow.app.models.repositiories.UserRepository;
 
 @Service
 public class TasksService {
@@ -22,21 +21,25 @@ public class TasksService {
 	private TaskColumnRepository taskColumnRepository;
 
 	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
 	private TaskRepository taskRepository;
+	
+	@Autowired
+	private AuthService authService;
 
 	public ResponseEntity<?> create(TaskCreateDto taskCreateDto) {
-		TaskColumn taskColumn = this.taskColumnRepository.findById(taskCreateDto.taskColumnId()).orElse(null);
-		User user = this.userRepository.findById(taskColumn.getUser_id()).orElse(null);
+		int taskColumnId = taskCreateDto.taskColumnId();
+		String goal = taskCreateDto.goal();
+		String description = taskCreateDto.description();
+		Boolean isCompleted = taskCreateDto.isCompleted();
+		
+		TaskColumn taskColumn = this.taskColumnRepository.findById(taskColumnId).orElse(null);
+		User userAuth = this.authService.getUserAuth();
 
-		if (taskColumn == null || user == null) {
+		if (taskColumn == null || userAuth == null) {
 			return ResponseEntity.notFound().build();
 		}
-
-		Task newTask = new Task(taskCreateDto.goal(), taskCreateDto.description(), taskCreateDto.isCompleted(),
-				taskColumn, user);
+		
+		Task newTask = new Task(goal, description, isCompleted, taskColumn, userAuth);
 		this.taskRepository.save(newTask);
 
 		return ResponseEntity.ok().build();
@@ -45,20 +48,22 @@ public class TasksService {
 	public ResponseEntity<Iterable<Task>> syncTasks(SyncTasksDto syncTasksDto) {
 
 		List<Integer> tasksIds = syncTasksDto.tasksIds();
-		Integer userId = syncTasksDto.userId();
+		int userAuthId = this.authService.getUserAuth().getId();
 
 		if (tasksIds == null || tasksIds.isEmpty()) {
-			return this.findAllByUserId(userId);
+			return this.findAll();
 		}
 
-		Iterable<Task> syncTasks = this.taskRepository.findAllByIdNotInAndUserId(tasksIds, userId);
+		Iterable<Task> syncTasks = this.taskRepository.findAllByIdNotInAndUserId(tasksIds, userAuthId);
 
 		return ResponseEntity.ok(syncTasks);
 
 	}
 
-	public ResponseEntity<Iterable<Task>> findAllByUserId(int userId) {
-		Iterable<Task> tasks = this.taskRepository.findAllByUserId(userId);
+	public ResponseEntity<Iterable<Task>> findAll() {
+		int userAuthId = this.authService.getUserAuth().getId();
+		
+		Iterable<Task> tasks = this.taskRepository.findAllByUserId(userAuthId);
 
 		return ResponseEntity.ok(tasks);
 	}

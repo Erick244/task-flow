@@ -1,15 +1,27 @@
-import { BASE_API_URL, TEMP_BEARER_TOKEN } from "@/utils/constants";
-import axios from "axios";
+import axios from "@/libs/axios";
+import { AxiosRequestConfig } from "axios";
 
-export async function fetchData(url: string) {
+export async function getApiData<R = any>(
+    url: string,
+    config?: AxiosRequestConfig
+): Promise<R> {
     try {
-        const config = {
-            headers: {
-                Authorization: TEMP_BEARER_TOKEN,
-            },
-        };
+        const response = await axios.get(url, config);
+        const data = await response.data;
 
-        const response = await axios.get(`${BASE_API_URL}${url}`, config);
+        return data;
+    } catch (e) {
+        throw e;
+    }
+}
+
+export async function postApiData<R = any>(
+    url: string,
+    body: any,
+    config?: AxiosRequestConfig
+): Promise<R> {
+    try {
+        const response = await axios.post(url, body, config);
         const data = await response.data;
 
         return data;

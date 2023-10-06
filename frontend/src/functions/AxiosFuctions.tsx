@@ -1,5 +1,5 @@
-import axios from "axios";
+import axios from "@/libs/axios";
 
-export function setBearerToken(token: string) {
-    axios.defaults.headers["Authorization"] = `Bearer ${token}`;
+export function setInAxiosTheBearerToken(token: string) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 }

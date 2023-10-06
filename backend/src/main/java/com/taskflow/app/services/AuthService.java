@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -57,19 +58,28 @@ public class AuthService {
 	}
 	
 	public ResponseEntity<LoginResponseDto> signIn(LoginDto loginDto) {
-		User user = this.userRepository.findByEmail(loginDto.email());
+		String email = loginDto.email();
+		String password = loginDto.password();
+		
+		User user = this.userRepository.findByEmail(email);
 		
 		if (user == null) {
 			return ResponseEntity.notFound().build();
 		}
 		
-		UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(loginDto.email(), loginDto.password());
+		UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(email, password);
 		Authentication auth = this.authenticationManager.authenticate(login);
 		
 		String token = this.jwtService.generateToken((UserDetails) auth.getPrincipal());
 		LoginResponseDto loginResponseDto = new LoginResponseDto(user, token);
 		
 		return ResponseEntity.ok(loginResponseDto);
+	}
+	
+	public User getUserAuth() {
+		User userAuth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		return userAuth;
 	}
 
 }

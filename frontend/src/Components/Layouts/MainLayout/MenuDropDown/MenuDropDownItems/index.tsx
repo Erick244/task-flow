@@ -1,11 +1,10 @@
 "use client";
 
-import { MenuDropDown } from "@/Components/Templates/Layout/MenuDropDown";
-import { LogoutIcon } from "@/Components/Utils/Icons";
 import ToggleTheme from "@/Components/Utils/ToggleTheme";
 import { menuDropDownVisibilityAtom } from "@/atomns/VisibilityAtoms";
 import { useAtomValue } from "jotai";
 import { twMerge } from "tailwind-merge";
+import { LogOutItem } from "./LogOutItem";
 
 export default function MainLayoutMenuDropDownItems() {
     const menuDropDownIsVisible = useAtomValue(menuDropDownVisibilityAtom);
@@ -20,11 +19,7 @@ export default function MainLayoutMenuDropDownItems() {
             )}
         >
             <ToggleTheme className="border-2 border-neutral-400 dark:border-white/30 p-2 rounded-lg" />
-            <MenuDropDown.Item
-                className="border-red-500 hover:bg-red-500/10 text-black/50 hover:text-red-500 dark:hover:text-red-500 dark:text-white/50"
-                title="Logout"
-                icon={LogoutIcon}
-            />
+            <LogOutItem />
         </div>
     );
 }

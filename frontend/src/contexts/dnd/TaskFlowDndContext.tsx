@@ -1,9 +1,9 @@
 "use client";
+import { postApiData } from "@/functions/ApiFunctions";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { TaskModel } from "@/models/entities/Task.model";
 import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
 import { DndTypes } from "@/models/enums/DndTypes.enum";
-import { BASE_API_URL, TEMP_BEARER_TOKEN } from "@/utils/constants";
 import {
     DragEndEvent,
     DragOverEvent,
@@ -16,7 +16,6 @@ import {
     useSensors,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface TaskFlowDndContextProps {
@@ -68,16 +67,9 @@ export default function TaskFlowDndContextProvider({
 
     async function fetchTasks() {
         try {
-            const resp = await axios.post(
-                `${BASE_API_URL}/tasks/sync`,
-                {
-                    userId: 1,
-                    tasksIds: tasksStorageIds,
-                },
-                { headers: { Authorization: TEMP_BEARER_TOKEN } }
-            );
-
-            const tasksData = await resp.data;
+            const tasksData = await postApiData<TaskModel[]>("/tasks/sync", {
+                tasksIds: tasksStorageIds,
+            });
 
             syncTasksInLocalStorage(tasksData);
 
@@ -101,16 +93,12 @@ export default function TaskFlowDndContextProvider({
 
     async function fetchTaskColumns() {
         try {
-            const resp = await axios.post(
-                `${BASE_API_URL}/taskColumns/sync`,
+            const taskColumnsData = await postApiData<TaskColumnModel[]>(
+                "/taskColumns/sync",
                 {
-                    userId: 1,
-                    taskColumnsIds: taskColumnsStorageIds,
-                },
-                { headers: { Authorization: TEMP_BEARER_TOKEN } }
+                    tasksIds: tasksStorageIds,
+                }
             );
-
-            const taskColumnsData = await resp.data;
 
             syncTaskColumnsInLocalStorage(taskColumnsData);
 

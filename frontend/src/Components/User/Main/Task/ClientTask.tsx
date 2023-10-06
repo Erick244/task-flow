@@ -4,9 +4,10 @@ import { Task } from "@/Components/Templates/Main/Task";
 import CloseArea from "@/Components/Utils/CloseArea";
 import { MoreIcon } from "@/Components/Utils/Icons";
 import { taskFormStateAtom } from "@/atomns/FormsAtoms";
-import { fetchData } from "@/functions/ApiFunctions";
+import { getApiData } from "@/functions/ApiFunctions";
 import useFloatMenu from "@/hooks/useFloatMenu";
 import { TaskModel } from "@/models/entities/Task.model";
+import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
 import { FormActions } from "@/models/enums/FormActions.enum";
 import { useSetAtom } from "jotai";
 import { HTMLAttributes, Ref, forwardRef, useState } from "react";
@@ -44,7 +45,7 @@ const ClientTask = forwardRef(
         const setTaskFormState = useSetAtom(taskFormStateAtom);
 
         async function handlerEditFloatMenuButton() {
-            const taskColumn = await fetchData(
+            const taskColumn = await getApiData<TaskColumnModel>(
                 `/taskColumns/findOne/${task.taskColumnId}`
             );
 
@@ -57,7 +58,7 @@ const ClientTask = forwardRef(
         }
 
         async function hanlderDeleteFloatMenuButton() {
-            const taskColumn = await fetchData(
+            const taskColumn = await getApiData<TaskColumnModel>(
                 `/taskColumns/findOne/${task.taskColumnId}`
             );
 

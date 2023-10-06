@@ -11,25 +11,21 @@ import com.taskflow.app.models.dtos.taskColumns.TaskColumnCreateDto;
 import com.taskflow.app.models.entities.TaskColumn;
 import com.taskflow.app.models.entities.User;
 import com.taskflow.app.models.repositiories.TaskColumnRepository;
-import com.taskflow.app.models.repositiories.UserRepository;
 
 @Service
 public class TaskColumnsService {
 
 	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
 	private TaskColumnRepository taskColumnRepository;
+	
+	@Autowired
+	private AuthService authService;
 
 	public ResponseEntity<?> create(TaskColumnCreateDto taskColumnCreateDto) {
-		User user = this.userRepository.findById(taskColumnCreateDto.userId()).orElse(null);
+		String title = taskColumnCreateDto.title();
+		User userAuth = this.authService.getUserAuth();
 
-		if (user == null) {
-			return ResponseEntity.notFound().build();
-		}
-
-		TaskColumn newTaskColumn = new TaskColumn(taskColumnCreateDto.title(), user);
+		TaskColumn newTaskColumn = new TaskColumn(title, userAuth);
 		this.taskColumnRepository.save(newTaskColumn);
 
 		return ResponseEntity.ok().build();
@@ -39,20 +35,22 @@ public class TaskColumnsService {
 	public ResponseEntity<Iterable<TaskColumn>> syncTaskColumns(SyncTaskColumnsDto syncTaskColumnsDto) {
 
 		List<Integer> taskColumnsIds = syncTaskColumnsDto.taskColumnsIds();
-		Integer userId = syncTaskColumnsDto.userId();
+		int userAuthId = this.authService.getUserAuth().getId();
 
 		if (taskColumnsIds == null || taskColumnsIds.isEmpty()) {
-			return this.findAllByUserId(userId);
+			return this.findAll();
 		}
 
-		Iterable<TaskColumn> syncTaskColumns = this.taskColumnRepository.findAllByIdNotInAndUserId(taskColumnsIds, userId);
+		Iterable<TaskColumn> syncTaskColumns = this.taskColumnRepository.findAllByIdNotInAndUserId(taskColumnsIds, userAuthId);
 
 		return ResponseEntity.ok(syncTaskColumns);
 
 	}
-
-	public ResponseEntity<Iterable<TaskColumn>> findAllByUserId(int userId) {
-		Iterable<TaskColumn> userTaskColumns = this.taskColumnRepository.findAllByUserId(userId);
+	
+	public ResponseEntity<Iterable<TaskColumn>> findAll() {
+		int userAuthId = this.authService.getUserAuth().getId();
+		
+		Iterable<TaskColumn> userTaskColumns = this.taskColumnRepository.findAllByUserId(userAuthId);
 
 		return ResponseEntity.ok(userTaskColumns);
 	}

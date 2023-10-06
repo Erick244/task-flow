@@ -1,11 +1,22 @@
+"use client";
 import { UserProfile } from "@/Components/User/UserProfile";
+import { useAuthContext } from "@/contexts/auth/AuthContext";
 
 export default function MainLayoutUserProfile() {
+    const { user } = useAuthContext();
+
+    if (!user) return <p>Loading userprofile....</p>; //TODO: Skeleton
+
+    const { avatarUrl, email, username } = user;
+
     return (
         <UserProfile.Root className="gap-2">
-            {/* <UserProfile.Image avatarUrl="https://github.com/Erick244.png" /> */}
-            <UserProfile.Gravatar email="erick@dev.com" />
-            <UserProfile.Name name="Erick dwad wa dawd aw daw dwad awdwa dawdaw da dwad aw dawdaw dw" />
+            {avatarUrl ? (
+                <UserProfile.Image avatarUrl={avatarUrl} />
+            ) : (
+                <UserProfile.Gravatar email={email} />
+            )}
+            <UserProfile.Name name={username} />
         </UserProfile.Root>
     );
 }

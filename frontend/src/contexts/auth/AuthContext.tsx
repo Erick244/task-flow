@@ -1,12 +1,12 @@
-import { fetchData } from "@/functions/ApiFunctions";
-import { setBearerToken } from "@/functions/AxiosFuctions";
+import { getApiData, postApiData } from "@/functions/ApiFunctions";
 import { UserModel } from "@/models/entities/User.model";
+import { UserAndToken } from "@/models/interfaces/UserAndToken.interface";
 import { SignInFormData } from "@/schemas/forms/signin-form.schema";
 import { SignupFormData } from "@/schemas/forms/signup-form.schema";
-import { BASE_API_URL } from "@/utils/constants";
-import axios from "axios";
+import { AUTH_TOKEN_NAME } from "@/utils/constants";
+import { HttpStatusCode } from "axios";
 import { useRouter } from "next/navigation";
-import { parseCookies, setCookie } from "nookies";
+import { destroyCookie, parseCookies, setCookie } from "nookies";
 import {
     ReactNode,
     createContext,
@@ -18,12 +18,12 @@ import {
 interface AuthContextProps {
     signUp: (signUpData: SignupFormData) => Promise<void>;
     signIn: (signInData: SignInFormData) => Promise<void>;
+    logOut: () => void;
     user: UserModel | null;
 }
 
 const AuthContext = createContext({} as AuthContextProps);
 
-const AUTH_TOKEN_NAME = "authToken-taskflow";
 const { [AUTH_TOKEN_NAME]: authToken } = parseCookies();
 
 export default function AuthContextProvider({
@@ -40,7 +40,7 @@ export default function AuthContextProvider({
                 if (!authToken) return setUser(null);
 
                 const URL = `/users/userByToken?authToken=${authToken}`;
-                const userAuth = await fetchData(URL);
+                const userAuth = await getApiData(URL);
 
                 setUser(userAuth);
             } catch (e) {
@@ -53,38 +53,48 @@ export default function AuthContextProvider({
 
     async function signIn(signInData: SignInFormData) {
         try {
-            const URL = `${BASE_API_URL}/auth/login`;
-            const resp = await axios.post(URL, signInData);
-
-            const { user, authToken } = await resp.data;
+            const { user, authToken } = await postApiData<UserAndToken>(
+                "/auth/login",
+                signInData
+            );
 
             const oneMounthInSeconds = 60 * 60 * 24 * 30;
             setCookie(null, AUTH_TOKEN_NAME, authToken, {
                 maxAge: oneMounthInSeconds,
+                path: "/",
             });
 
-            setBearerToken(authToken);
             setUser(user);
-
             push("/main");
         } catch (e: any) {
-            const errorMessage = e.response.data; //TODO: Obter a mensagem de senha invalida
-            throw errorMessage;
+            const responseStatus = e.response.status;
+
+            if (responseStatus === HttpStatusCode.Forbidden) {
+                throw "Invalid password";
+            } else {
+                throw "This e-mail does not have an account";
+            }
         }
     }
 
     async function signUp(signUpData: SignupFormData) {
         try {
-            const URL = `${BASE_API_URL}/auth/signup`;
-            await axios.post(URL, signUpData);
+            await postApiData("/auth/ginpsu", signUpData);
         } catch (e: any) {
             const errorMessage = e.response.data;
             throw errorMessage;
         }
     }
 
+    function logOut() {
+        destroyCookie(null, AUTH_TOKEN_NAME);
+        setUser(null);
+
+        push("/auth/login");
+    }
+
     return (
-        <AuthContext.Provider value={{ signUp, signIn, user }}>
+        <AuthContext.Provider value={{ signUp, signIn, user, logOut }}>
             {children}
         </AuthContext.Provider>
     );

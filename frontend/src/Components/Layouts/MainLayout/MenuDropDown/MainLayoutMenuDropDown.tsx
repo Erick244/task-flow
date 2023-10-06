@@ -1,6 +1,6 @@
 import { MenuDropDown } from "@/Components/Templates/Layout/MenuDropDown";
 import MainLayoutMenuDropDownHeader from "./MainLayoutMenuDropDownHeader";
-import MainLayoutMenuDropDownItems from "./MainLayoutMenuDropDownItems";
+import MainLayoutMenuDropDownItems from "./MenuDropDownItems";
 
 export default function MainLayoutMenuDropDown() {
     return (

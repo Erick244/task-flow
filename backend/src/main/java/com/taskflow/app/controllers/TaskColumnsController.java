@@ -28,9 +28,9 @@ public class TaskColumnsController {
 		return this.taskColumnsService.create(taskColumnCreateDto);
 	}
 	
-	@GetMapping("/findAllByUserId/{userId}")
-	public ResponseEntity<Iterable<TaskColumn>> findAllByUserId(@PathVariable int userId) {
-		return this.taskColumnsService.findAllByUserId(userId);
+	@GetMapping("/findAll")
+	public ResponseEntity<Iterable<TaskColumn>> findAll() {
+		return this.taskColumnsService.findAll();
 	}
 	
 	@PostMapping("/sync")
