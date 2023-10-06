@@ -17,6 +17,7 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useAuthContext } from "../auth/AuthContext";
 
 interface TaskFlowDndContextProps {
     tasks: TaskModel[];
@@ -43,11 +44,15 @@ export default function TaskFlowDndContextProvider({
     const [taskColumns, setTaskColumns] = useState<TaskColumnModel[]>([]);
     const [loadingTaskColumns, setLoadingTaskColumns] = useState<boolean>(true);
 
-    const [tasksStorage, setTasksStorage, tasksStorageLoading] =
-        useLocalStorage<TaskModel[]>("tasks", []);
+    const { user } = useAuthContext();
 
+    const tasksLocalStorageKey = `tasks_order_${user?.id}`;
+    const [tasksStorage, setTasksStorage, tasksStorageLoading] =
+        useLocalStorage<TaskModel[]>(tasksLocalStorageKey, []);
+
+    const taskColumnsLocalStorageKey = `task_columns_order_${user?.id}`;
     const [taskColumnsStorage, setTaskColumnsStorage, taskColumnsLoading] =
-        useLocalStorage<TaskColumnModel[]>("taskColumns", []);
+        useLocalStorage<TaskColumnModel[]>(taskColumnsLocalStorageKey, []);
 
     function setInitialValueInTasksAndTaskColumns() {
         setTasks(tasksStorage ?? []);
@@ -96,7 +101,7 @@ export default function TaskFlowDndContextProvider({
             const taskColumnsData = await postApiData<TaskColumnModel[]>(
                 "/taskColumns/sync",
                 {
-                    tasksIds: tasksStorageIds,
+                    taskColumnsIds: tasksStorageIds,
                 }
             );
 

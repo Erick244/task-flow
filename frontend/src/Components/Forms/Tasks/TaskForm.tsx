@@ -5,10 +5,10 @@ import { taskFormStateAtom } from "@/atomns/FormsAtoms";
 import { stopClickPropagation } from "@/functions/EventsFunctions";
 import { FormActions } from "@/models/enums/FormActions.enum";
 import { useAtom } from "jotai";
+import { useForm } from "react-hook-form";
 
 export default function TaskForm() {
     const [taskFormState, setTaskFormState] = useAtom(taskFormStateAtom);
-
     const { taskColumn, task } = taskFormState;
 
     function handlerActionButton() {
@@ -31,6 +31,18 @@ export default function TaskForm() {
             : "bg-blue-500 hover:bg-blue-600",
     };
 
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({});
+
+    function handleFormTask(data: any) {
+        console.log(data);
+    }
+
+    // TODO: Separa este formulario em 3 partes
+
     return (
         <Form.Container
             className="sm:w-1/3 w-10/12"
@@ -40,14 +52,16 @@ export default function TaskForm() {
                 formTitle={currentFormTitle}
                 taskColumnTitle={taskColumn?.title}
             />
-            <Form.Root>
+            <Form.Root onSubmit={handleSubmit(handleFormTask)}>
                 <Form.Input
+                    register={register("goal")}
                     label="Goal"
                     value={task?.goal || ""}
                     disabled={formActionIsDelete}
                     disableLabelAnimation={disableLabelAnimation}
                 />
                 <Form.TextArea
+                    register={register("description")}
                     value={task?.description || ""}
                     label="Description (Optional)"
                     maxLength={250}

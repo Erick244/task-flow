@@ -1,8 +1,9 @@
 "use client";
+import TaskForm from "@/Components/Forms/Tasks/TaskForm";
 import CloseArea from "@/Components/Utils/CloseArea";
 import {
-    taskColumnFormStateAtom,
-    taskFormStateAtom,
+	taskColumnFormStateAtom,
+	taskFormStateAtom,
 } from "@/atomns/FormsAtoms";
 import { useAtomValue } from "jotai";
 
@@ -29,7 +30,7 @@ export default function MainLayoutMain({ children }: MainLayoutMainProps) {
                 isVisible={saveTaskFormIsVisible}
                 className="flex justify-center items-center"
             >
-                {/* <TaskForm /> */}
+                <TaskForm />
             </CloseArea>
 
             {children}
