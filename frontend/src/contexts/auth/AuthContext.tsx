@@ -1,4 +1,5 @@
 import { getApiData, postApiData } from "@/functions/ApiFunctions";
+import { getCookieInClient } from "@/functions/CookiesFunctions";
 import { UserModel } from "@/models/entities/User.model";
 import { UserAndToken } from "@/models/interfaces/UserAndToken.interface";
 import { SignInFormData } from "@/schemas/forms/signin-form.schema";
@@ -6,7 +7,7 @@ import { SignupFormData } from "@/schemas/forms/signup-form.schema";
 import { AUTH_TOKEN_NAME } from "@/utils/constants";
 import { HttpStatusCode } from "axios";
 import { useRouter } from "next/navigation";
-import { destroyCookie, parseCookies, setCookie } from "nookies";
+import { destroyCookie, setCookie } from "nookies";
 import {
     ReactNode,
     createContext,
@@ -24,7 +25,7 @@ interface AuthContextProps {
 
 const AuthContext = createContext({} as AuthContextProps);
 
-const { [AUTH_TOKEN_NAME]: authToken } = parseCookies();
+const authToken = getCookieInClient(AUTH_TOKEN_NAME);
 
 export default function AuthContextProvider({
     children,
@@ -79,7 +80,7 @@ export default function AuthContextProvider({
 
     async function signUp(signUpData: SignupFormData) {
         try {
-            await postApiData("/auth/ginpsu", signUpData);
+            await postApiData("/auth/signup", signUpData);
         } catch (e: any) {
             const errorMessage = e.response.data;
             throw errorMessage;

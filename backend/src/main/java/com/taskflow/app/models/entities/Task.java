@@ -2,7 +2,6 @@ package com.taskflow.app.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,10 +25,10 @@ public class Task {
 	
 	private Boolean isCompleted;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne()
 	private TaskColumn taskColumn;
 	
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne()
 	private User user;
 	
 	public Task() {

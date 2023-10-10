@@ -42,7 +42,7 @@ public class TasksService {
 		Task newTask = new Task(goal, description, isCompleted, taskColumn, userAuth);
 		this.taskRepository.save(newTask);
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(newTask);
 	}
 
 	public ResponseEntity<Iterable<Task>> syncTasks(SyncTasksDto syncTasksDto) {

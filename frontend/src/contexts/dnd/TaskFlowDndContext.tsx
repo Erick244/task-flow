@@ -19,6 +19,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
 
+//TODO: Separar em dois
 interface TaskFlowDndContextProps {
     tasks: TaskModel[];
     taskColumns: TaskColumnModel[];
@@ -29,6 +30,7 @@ interface TaskFlowDndContextProps {
     handlerOnDragOver: (event: DragOverEvent) => void;
     handlerOnDragStart: (event: DragStartEvent) => void;
     sensors: SensorDescriptor<SensorOptions>[];
+    fetchTasks: () => Promise<void>;
 }
 
 const TaskFlowDndContext = createContext({} as TaskFlowDndContextProps);
@@ -288,6 +290,7 @@ export default function TaskFlowDndContextProvider({
     return (
         <TaskFlowDndContext.Provider
             value={{
+                fetchTasks,
                 taskColumns,
                 tasks,
                 dataFetchingIsLoading,

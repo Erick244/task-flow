@@ -27,7 +27,7 @@ public class TaskColumn {
 	@OneToMany(mappedBy = "taskColumn", cascade = CascadeType.PERSIST)
 	private List<Task> tasks = new ArrayList<>();
 	
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne()
 	private User user;
 	
 	public TaskColumn() {}

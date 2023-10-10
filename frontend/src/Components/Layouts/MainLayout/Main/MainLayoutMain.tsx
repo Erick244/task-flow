@@ -1,10 +1,11 @@
 "use client";
-import TaskForm from "@/Components/Forms/Tasks/TaskForm";
+import CreateTaskForm from "@/Components/Forms/Tasks/CreateTaskForm";
 import CloseArea from "@/Components/Utils/CloseArea";
 import {
-	taskColumnFormStateAtom,
-	taskFormStateAtom,
+    taskColumnFormStateAtom,
+    taskFormStateAtom,
 } from "@/atomns/FormsAtoms";
+import { FormActions } from "@/models/enums/FormActions.enum";
 import { useAtomValue } from "jotai";
 
 interface MainLayoutMainProps {
@@ -15,7 +16,9 @@ export default function MainLayoutMain({ children }: MainLayoutMainProps) {
     const taskColumnFormIsVisible = useAtomValue(
         taskColumnFormStateAtom
     ).visibility;
-    const saveTaskFormIsVisible = useAtomValue(taskFormStateAtom).visibility;
+
+    const taskFormState = useAtomValue(taskFormStateAtom);
+    const taksFormAction = taskFormState.formAction;
 
     return (
         <main className="w-full h-full flex-grow dark:bg-neutral-700 bg-stone-300 overflow-x-hidden">
@@ -27,10 +30,10 @@ export default function MainLayoutMain({ children }: MainLayoutMainProps) {
             </CloseArea>
 
             <CloseArea
-                isVisible={saveTaskFormIsVisible}
+                isVisible={taskFormState.visibility}
                 className="flex justify-center items-center"
             >
-                <TaskForm />
+                {taksFormAction === FormActions.CREATE && <CreateTaskForm />}
             </CloseArea>
 
             {children}
