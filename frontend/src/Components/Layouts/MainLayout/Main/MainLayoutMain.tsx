@@ -1,5 +1,6 @@
 "use client";
 import CreateTaskForm from "@/Components/Forms/Tasks/CreateTaskForm";
+import DeleteTaskForm from "@/Components/Forms/Tasks/DeleteTaskForm";
 import CloseArea from "@/Components/Utils/CloseArea";
 import {
     taskColumnFormStateAtom,
@@ -34,6 +35,7 @@ export default function MainLayoutMain({ children }: MainLayoutMainProps) {
                 className="flex justify-center items-center"
             >
                 {taksFormAction === FormActions.CREATE && <CreateTaskForm />}
+                {taksFormAction === FormActions.DELETE && <DeleteTaskForm />}
             </CloseArea>
 
             {children}

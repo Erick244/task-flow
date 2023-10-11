@@ -29,3 +29,17 @@ export async function postApiData<R = any>(
         throw e;
     }
 }
+
+export async function deleteApiData<R = any>(
+    url: string,
+    config?: AxiosRequestConfig
+): Promise<R> {
+    try {
+        const response = await axios.delete(url, config);
+        const data = await response.data;
+
+        return data;
+    } catch (e) {
+        throw e;
+    }
+}

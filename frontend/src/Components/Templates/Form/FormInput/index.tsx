@@ -18,7 +18,7 @@ interface FormInputProps
     > {
     label: string;
     disableLabelAnimation?: boolean;
-    register: UseFormRegisterReturn<string>;
+    register?: UseFormRegisterReturn<string>;
 }
 
 export default function FormInput({
@@ -30,7 +30,6 @@ export default function FormInput({
     const {
         inputId,
         inputIsFocus,
-        changeRegister,
         handleOnBlur,
         handleOnChange,
         handleOnFocus,
@@ -54,19 +53,17 @@ export default function FormInput({
                     "w-full bg-transparent outline-none focus:ring-transparent ring-transparent border-t-0 border-r-0 border-l-0 border-b-2 border-neutral-500 focus:border-blue-500 px-2 py-0 dark:text-white disabled:border-dashed dark:disabled:text-white/50 disabled:text-black/50",
                     rest.className
                 )}
-                {...changeRegister}
+                {...register}
             />
         </div>
     );
 }
 
-function useFormInput(register: UseFormRegisterReturn<string>) {
+function useFormInput(register?: UseFormRegisterReturn<string>) {
     const inputId = useId();
 
     const [inputIsFocus, setInputIsFocus] = useState<boolean>(false);
     const [inputLength, setInputLength] = useState<number>(0);
-
-    const { onBlur, onChange, ...changeRegister } = register;
 
     function handleOnBlur(e: FocusEvent) {
         if (!inputLength) setInputIsFocus(false);
@@ -91,6 +88,5 @@ function useFormInput(register: UseFormRegisterReturn<string>) {
         handleOnFocus,
         handleOnChange,
         handleOnBlur,
-        changeRegister,
     };
 }

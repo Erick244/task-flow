@@ -17,7 +17,7 @@ interface FormTextAreaProps
     > {
     label: string;
     maxLength: number;
-    register: UseFormRegisterReturn<string>;
+    register?: UseFormRegisterReturn<string>;
 }
 
 export default function FormTextArea({
@@ -31,7 +31,7 @@ export default function FormTextArea({
 
     function handleOnChange(e: ChangeEvent<HTMLTextAreaElement>) {
         setTextLength(e.target.value.length);
-        register.onChange(e);
+        register?.onChange(e);
     }
 
     return (

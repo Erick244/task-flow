@@ -1,0 +1,85 @@
+"use client";
+import { Form } from "@/Components/Templates/Form";
+import { TrashIcon } from "@/Components/Utils/Icons";
+import { taskFormStateAtom } from "@/atomns/FormsAtoms";
+import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
+import { deleteApiData } from "@/functions/ApiFunctions";
+import { stopClickPropagation } from "@/functions/EventsFunctions";
+import { TaskModel } from "@/models/entities/Task.model";
+import { useAtom } from "jotai";
+import { FormEvent } from "react";
+
+export default function DeleteTaskForm() {
+    const [taskFormState, setTaskFormState] = useAtom(taskFormStateAtom);
+    const { taskColumn, task } = taskFormState;
+
+    function closeDeleteTaskForm() {
+        setTaskFormState({
+            ...taskFormState,
+            visibility: false,
+        });
+    }
+
+    const { updateTasksInDnd, tasks } = useTaskFlowDndContext();
+
+    async function handleDeleteTask(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        const tasksUpdated = tasks?.filter(
+            (taskInLocalStorage: TaskModel) => taskInLocalStorage.id != task?.id
+        );
+
+        updateTasksInDnd(tasksUpdated ?? []);
+        await deleteApiData(`/tasks/${task?.id}`);
+
+        closeDeleteTaskForm();
+    }
+
+    return (
+        <Form.Container
+            className="sm:w-1/3 w-10/12"
+            onClick={stopClickPropagation}
+        >
+            <div className="flex flex-col">
+                <Form.Title title="Delete Task" className="mb-5" />
+                <Form.SubTitle
+                    title={taskColumn?.title || ""}
+                    className="mb-10 self-center"
+                />
+            </div>
+            <Form.Root onSubmit={handleDeleteTask}>
+                <Form.Input
+                    value={task?.goal}
+                    label="Goal"
+                    disableLabelAnimation
+                    disabled
+                />
+
+                <Form.TextArea
+                    value={task?.description || ""}
+                    label="Description (Optional)"
+                    maxLength={150}
+                    placeholder="Create a description for your goal, ex: Drinking water..."
+                    disabled
+                />
+
+                <Form.AlertMessage>
+                    Do you want to <strong>PERMANENTLY DELETE</strong> this
+                    task?
+                </Form.AlertMessage>
+
+                <div className="flex justify-between mt-5">
+                    <Form.ActionButton
+                        label="Cancel"
+                        onClick={closeDeleteTaskForm}
+                    />
+                    <Form.SubmitButton
+                        className="bg-red-500 hover:bg-red-600"
+                        label="Delete"
+                        icon={TrashIcon}
+                    />
+                </div>
+            </Form.Root>
+        </Form.Container>
+    );
+}

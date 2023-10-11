@@ -31,6 +31,7 @@ interface TaskFlowDndContextProps {
     handlerOnDragStart: (event: DragStartEvent) => void;
     sensors: SensorDescriptor<SensorOptions>[];
     fetchTasks: () => Promise<void>;
+    updateTasksInDnd: (tasks: TaskModel[]) => void;
 }
 
 const TaskFlowDndContext = createContext({} as TaskFlowDndContextProps);
@@ -86,6 +87,11 @@ export default function TaskFlowDndContextProvider({
         }
     }
 
+    function updateTasksInDnd(tasks: TaskModel[]) {
+        setTasksStorage(tasks);
+        setTasks(tasks);
+    }
+
     function syncTasksInLocalStorage(tasksData: TaskModel[]) {
         const existTasksStorageIds = Array.isArray(tasksStorageIds);
 
@@ -103,7 +109,7 @@ export default function TaskFlowDndContextProvider({
             const taskColumnsData = await postApiData<TaskColumnModel[]>(
                 "/taskColumns/sync",
                 {
-                    taskColumnsIds: tasksStorageIds,
+                    taskColumnsIds: taskColumnsStorageIds,
                 }
             );
 
@@ -290,6 +296,7 @@ export default function TaskFlowDndContextProvider({
     return (
         <TaskFlowDndContext.Provider
             value={{
+                updateTasksInDnd,
                 fetchTasks,
                 taskColumns,
                 tasks,
