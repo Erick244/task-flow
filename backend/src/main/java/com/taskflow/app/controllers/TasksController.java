@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.taskflow.app.models.dtos.tasks.SyncTasksDto;
 import com.taskflow.app.models.dtos.tasks.TaskCreateDto;
+import com.taskflow.app.models.dtos.tasks.UpdateTaskDto;
 import com.taskflow.app.models.entities.Task;
 import com.taskflow.app.services.TasksService;
 
@@ -42,5 +44,10 @@ public class TasksController {
 	@DeleteMapping("/{taskId}")
 	public ResponseEntity<?> delete(@PathVariable int taskId) {
 		return this.tasksService.delete(taskId);
+	}
+	
+	@RequestMapping(method = {RequestMethod.PATCH, RequestMethod.PUT}, path = "/{taskId}")
+	public ResponseEntity<?> update(@RequestBody UpdateTaskDto updateTaskDto, @PathVariable int taskId) {
+		return this.tasksService.update(updateTaskDto, taskId);
 	}
 }

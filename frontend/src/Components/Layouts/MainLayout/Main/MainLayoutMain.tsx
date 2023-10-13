@@ -1,6 +1,7 @@
 "use client";
 import CreateTaskForm from "@/Components/Forms/Tasks/CreateTaskForm";
 import DeleteTaskForm from "@/Components/Forms/Tasks/DeleteTaskForm";
+import EditTaskForm from "@/Components/Forms/Tasks/EditTaskForm";
 import CloseArea from "@/Components/Utils/CloseArea";
 import {
     taskColumnFormStateAtom,
@@ -36,6 +37,7 @@ export default function MainLayoutMain({ children }: MainLayoutMainProps) {
             >
                 {taksFormAction === FormActions.CREATE && <CreateTaskForm />}
                 {taksFormAction === FormActions.DELETE && <DeleteTaskForm />}
+                {taksFormAction === FormActions.EDIT && <EditTaskForm />}
             </CloseArea>
 
             {children}

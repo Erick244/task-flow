@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.taskflow.app.models.dtos.tasks.SyncTasksDto;
 import com.taskflow.app.models.dtos.tasks.TaskCreateDto;
+import com.taskflow.app.models.dtos.tasks.UpdateTaskDto;
 import com.taskflow.app.models.entities.Task;
 import com.taskflow.app.models.entities.TaskColumn;
 import com.taskflow.app.models.entities.User;
@@ -81,6 +82,46 @@ public class TasksService {
 		} else {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
+	}
+	
+	public ResponseEntity<?> update(UpdateTaskDto updateTaskDto, int taskId) {
+		String goal = updateTaskDto.goal();
+		String description = updateTaskDto.description();
+		Boolean isCompleted = updateTaskDto.isCompleted();
+		
+		if (updateTaskDto.equals(null)) {
+			return ResponseEntity.noContent().build();
+		}
+		
+		Task task = this.taskRepository.findById(taskId).orElse(null);
+		
+		if (task == null) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		if (theTaskIsTheUser(taskId)) {
+			task.setGoal(goal);
+			task.setDescription(description);
+			task.setIsCompleted(isCompleted);
+			
+			this.taskRepository.save(task);
+			return ResponseEntity.noContent().build();
+		} else {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+		
+	}
+	
+	private boolean theTaskIsTheUser(int taskId) {
+		int userAuthId = this.authService.getUserAuth().getId();
+		Task task = this.taskRepository.findByIdAndUserId(taskId, userAuthId);
+		
+		if (task == null) {
+			return false;
+		} else {
+			return true;
+		}
+		
 	}
 
 }

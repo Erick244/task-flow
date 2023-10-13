@@ -43,3 +43,18 @@ export async function deleteApiData<R = any>(
         throw e;
     }
 }
+
+export async function patchApiData<R = any>(
+    url: string,
+    body: any,
+    config?: AxiosRequestConfig
+): Promise<R> {
+    try {
+        const response = await axios.patch(url, body, config);
+        const data = await response.data;
+
+        return data;
+    } catch (e) {
+        throw e;
+    }
+}
