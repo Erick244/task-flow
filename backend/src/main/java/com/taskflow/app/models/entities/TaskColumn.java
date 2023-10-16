@@ -48,6 +48,11 @@ public class TaskColumn {
 	}
 	
 	@JsonIgnore
+	public List<Task> getTasks() {
+		return this.tasks;
+	}
+	
+	@JsonIgnore
 	public int getUser_id() {
 		return user.getId();
 	}

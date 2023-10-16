@@ -1,4 +1,7 @@
 "use client";
+import CreateTaskColumnForm from "@/Components/Forms/TaskColumns/CreateTaskColumnForm";
+import DeleteTaskColumnForm from "@/Components/Forms/TaskColumns/DeleteTaskColumnForm";
+import EditTaskColumnForm from "@/Components/Forms/TaskColumns/EditTaskColumnForm";
 import CreateTaskForm from "@/Components/Forms/Tasks/CreateTaskForm";
 import DeleteTaskForm from "@/Components/Forms/Tasks/DeleteTaskForm";
 import EditTaskForm from "@/Components/Forms/Tasks/EditTaskForm";
@@ -15,9 +18,8 @@ interface MainLayoutMainProps {
 }
 
 export default function MainLayoutMain({ children }: MainLayoutMainProps) {
-    const taskColumnFormIsVisible = useAtomValue(
-        taskColumnFormStateAtom
-    ).visibility;
+    const taskColumnFormState = useAtomValue(taskColumnFormStateAtom);
+    const taskColumnAction = taskColumnFormState.formAction;
 
     const taskFormState = useAtomValue(taskFormStateAtom);
     const taksFormAction = taskFormState.formAction;
@@ -25,10 +27,18 @@ export default function MainLayoutMain({ children }: MainLayoutMainProps) {
     return (
         <main className="w-full h-full flex-grow dark:bg-neutral-700 bg-stone-300 overflow-x-hidden">
             <CloseArea
-                isVisible={taskColumnFormIsVisible}
+                isVisible={taskColumnFormState.visibility}
                 className="flex justify-center items-center"
             >
-                {/* <TaskColumnForm /> */}
+                {taskColumnAction === FormActions.CREATE && (
+                    <CreateTaskColumnForm />
+                )}
+                {taskColumnAction === FormActions.EDIT && (
+                    <EditTaskColumnForm />
+                )}
+                {taskColumnAction === FormActions.DELETE && (
+                    <DeleteTaskColumnForm />
+                )}
             </CloseArea>
 
             <CloseArea

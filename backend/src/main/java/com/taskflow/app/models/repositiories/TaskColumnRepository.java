@@ -7,6 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import com.taskflow.app.models.entities.TaskColumn;
 
 public interface TaskColumnRepository extends CrudRepository<TaskColumn, Integer> {
+	
+	TaskColumn findByIdAndUserId(int taskColumnId, int userId);
 
 	Iterable<TaskColumn> findAllByUserId(int userId);
 	

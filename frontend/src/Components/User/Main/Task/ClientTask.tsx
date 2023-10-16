@@ -4,7 +4,8 @@ import { Task } from "@/Components/Templates/Main/Task";
 import CloseArea from "@/Components/Utils/CloseArea";
 import { MoreIcon } from "@/Components/Utils/Icons";
 import { taskFormStateAtom } from "@/atomns/FormsAtoms";
-import { getApiData } from "@/functions/ApiFunctions";
+import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
+import { getApiData, patchApiData } from "@/functions/ApiFunctions";
 import useFloatMenu from "@/hooks/useFloatMenu";
 import { TaskModel } from "@/models/entities/Task.model";
 import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
@@ -70,6 +71,30 @@ const ClientTask = forwardRef(
             });
         }
 
+        const { tasks, updateTasksInDnd } = useTaskFlowDndContext();
+        async function handleCheckBox() {
+            const newCheckBoxState = !task.isCompleted;
+
+            await patchApiData(`/tasks/${task.id}`, {
+                isCompleted: newCheckBoxState,
+            });
+
+            const taskUpdatedData: TaskModel = {
+                ...task,
+                isCompleted: newCheckBoxState,
+            };
+
+            const updatedTasks = tasks.map((dndTask: TaskModel) => {
+                if (dndTask.id == task.id) {
+                    dndTask = taskUpdatedData;
+                }
+
+                return dndTask;
+            });
+
+            updateTasksInDnd(updatedTasks);
+        }
+
         return (
             <Task.Root
                 {...rest}
@@ -78,8 +103,15 @@ const ClientTask = forwardRef(
                 className={twMerge("flex flex-col", rest.className)}
             >
                 <div className="flex gap-2">
-                    <Task.ChekBox defaultChecked={task.isCompleted} />
-                    <Task.Goal goal={task.goal} className="flex-grow" />
+                    <Task.ChekBox
+                        onClick={handleCheckBox}
+                        defaultChecked={task.isCompleted}
+                    />
+                    <Task.Goal
+                        goal={task.goal}
+                        className="flex-grow"
+                        lineThrough={task.isCompleted}
+                    />
                     {existsDescription && (
                         <Task.ToggleDescription
                             onClick={toggleDescriptionVisiblity}

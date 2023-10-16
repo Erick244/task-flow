@@ -32,6 +32,8 @@ interface TaskFlowDndContextProps {
     sensors: SensorDescriptor<SensorOptions>[];
     fetchTasks: () => Promise<void>;
     updateTasksInDnd: (tasks: TaskModel[]) => void;
+    fetchTaskColumns: () => Promise<void>;
+    updateTasksColumnsInDnd: (taskColumns: TaskColumnModel[]) => void;
 }
 
 const TaskFlowDndContext = createContext({} as TaskFlowDndContextProps);
@@ -119,6 +121,11 @@ export default function TaskFlowDndContextProvider({
         } catch (e) {
             console.error(e);
         }
+    }
+
+    function updateTasksColumnsInDnd(taskColumns: TaskColumnModel[]) {
+        setTaskColumnsStorage(taskColumns);
+        setTaskColumns(taskColumns);
     }
 
     function syncTaskColumnsInLocalStorage(taskColumnsData: TaskColumnModel[]) {
@@ -296,6 +303,8 @@ export default function TaskFlowDndContextProvider({
     return (
         <TaskFlowDndContext.Provider
             value={{
+                updateTasksColumnsInDnd,
+                fetchTaskColumns,
                 updateTasksInDnd,
                 fetchTasks,
                 taskColumns,

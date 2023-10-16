@@ -89,7 +89,7 @@ public class TasksService {
 		String description = updateTaskDto.description();
 		Boolean isCompleted = updateTaskDto.isCompleted();
 		
-		if (updateTaskDto.equals(null)) {
+		if (updateTaskDto.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		}
 		
@@ -100,9 +100,13 @@ public class TasksService {
 		}
 		
 		if (theTaskIsTheUser(taskId)) {
-			task.setGoal(goal);
-			task.setDescription(description);
-			task.setIsCompleted(isCompleted);
+			if (goal != null) {
+				task.setGoal(goal);				
+			} else if (description != null) {
+				task.setDescription(description);				
+			} else if (isCompleted != null) {
+				task.setIsCompleted(isCompleted);				
+			}
 			
 			this.taskRepository.save(task);
 			return ResponseEntity.noContent().build();
