@@ -86,6 +86,7 @@ public class Task {
 		this.taskColumn = taskColumn;
 	}
 	
+	
 	@JsonIgnore
 	public User getUser() {
 		return user;

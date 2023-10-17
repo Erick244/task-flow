@@ -1,4 +1,5 @@
 "use client";
+import { DefaultLoadingPage } from "@/Components/Skeletons/Page/DefaultLoadingPage";
 import { taskColumnFormStateAtom } from "@/atomns/FormsAtoms";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
 import { FormActions } from "@/models/enums/FormActions.enum";
@@ -23,7 +24,7 @@ export default function DndContainer() {
 
     const setSaveTaskColumnState = useSetAtom(taskColumnFormStateAtom);
 
-    if (dataFetchingIsLoading) return <p>Loading...</p>; // TODO: Skeleton
+    if (dataFetchingIsLoading) return <DefaultLoadingPage />;
 
     function handlerAddTaskColumnButton() {
         setSaveTaskColumnState({

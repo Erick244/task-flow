@@ -1,4 +1,5 @@
 "use client";
+import { DefaultLoadingPage } from "@/Components/Skeletons/Page/DefaultLoadingPage";
 import { useAuthContext } from "@/contexts/auth/AuthContext";
 import TaskFlowDndContextProvider from "@/contexts/dnd/TaskFlowDndContext";
 
@@ -9,12 +10,7 @@ interface ProvidersProps {
 export function MainProviders({ children }: ProvidersProps) {
     const { user } = useAuthContext();
 
-    if (!user)
-        return (
-            <p className="h-screen w-screen dark:bg-neutral-700 bg-stone-300">
-                Loading...
-            </p>
-        );
+    if (!user) return <DefaultLoadingPage />;
 
     return <TaskFlowDndContextProvider>{children}</TaskFlowDndContextProvider>;
 }
