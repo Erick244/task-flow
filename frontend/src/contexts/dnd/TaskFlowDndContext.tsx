@@ -1,5 +1,5 @@
 "use client";
-import { postApiData } from "@/functions/ApiFunctions";
+import { patchApiData, postApiData } from "@/functions/ApiFunctions";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { TaskModel } from "@/models/entities/Task.model";
 import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
@@ -257,6 +257,11 @@ export default function TaskFlowDndContextProvider({
                 const overTaskColumnId = tasks[overIndex].taskColumnId;
                 tasks[activeIndex].taskColumnId = overTaskColumnId;
 
+                const currentTaskId = tasks[activeIndex].id;
+                patchApiData(`/tasks/${currentTaskId}`, {
+                    taskColumnId: overTaskColumnId,
+                });
+
                 const newArrayMoved = arrayMove(tasks, activeIndex, overIndex);
 
                 setTasksStorage(newArrayMoved);
@@ -274,6 +279,11 @@ export default function TaskFlowDndContextProvider({
                 const activeIndex = findIndexById(tasks, activeId);
 
                 tasks[activeIndex].taskColumnId = overId;
+
+                const currentTaskId = tasks[activeIndex].id;
+                patchApiData(`/tasks/${currentTaskId}`, {
+                    taskColumnId: overId,
+                });
 
                 const newArrayMoved = arrayMove(
                     tasks,

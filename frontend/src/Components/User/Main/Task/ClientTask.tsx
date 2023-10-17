@@ -99,7 +99,7 @@ const ClientTask = forwardRef(
             <Task.Root
                 {...rest}
                 ref={ref}
-                descriptionIsVisible={descriptionIsVisible}
+                descriptionIsVisible={descriptionIsVisible && existsDescription}
                 className={twMerge("flex flex-col", rest.className)}
             >
                 <div className="flex gap-2">

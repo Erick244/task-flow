@@ -1,12 +1,15 @@
 package com.taskflow.app.services;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.taskflow.app.exceptions.HttpException;
+import com.taskflow.app.exceptions.taskColumn.TaskColumnNotFound;
 import com.taskflow.app.models.dtos.tasks.SyncTasksDto;
 import com.taskflow.app.models.dtos.tasks.TaskCreateDto;
 import com.taskflow.app.models.dtos.tasks.UpdateTaskDto;
@@ -85,35 +88,37 @@ public class TasksService {
 	}
 	
 	public ResponseEntity<?> update(UpdateTaskDto updateTaskDto, int taskId) {
-		String goal = updateTaskDto.goal();
-		String description = updateTaskDto.description();
-		Boolean isCompleted = updateTaskDto.isCompleted();
-		
-		if (updateTaskDto.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		}
-		
-		Task task = this.taskRepository.findById(taskId).orElse(null);
-		
-		if (task == null) {
-			return ResponseEntity.notFound().build();
-		}
-		
-		if (theTaskIsTheUser(taskId)) {
-			if (goal != null) {
-				task.setGoal(goal);				
-			} else if (description != null) {
-				task.setDescription(description);				
-			} else if (isCompleted != null) {
-				task.setIsCompleted(isCompleted);				
+		try {
+			if (updateTaskDto.isEmpty()) {
+				return ResponseEntity.noContent().build();
 			}
 			
-			this.taskRepository.save(task);
-			return ResponseEntity.noContent().build();
-		} else {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+			Task task = this.taskRepository.findById(taskId).orElse(null);
+			if (task == null) {
+				return ResponseEntity.notFound().build();
+			}
+			
+			if (theTaskIsTheUser(taskId)) {
+				Integer taskColumnId = updateTaskDto.taskColumnId();
+				updateIfNotNull(taskColumnId, id -> updateTaskColumnId(task, taskColumnId));
+								
+				String goal = updateTaskDto.goal();
+				updateIfNotNull(goal, task::setGoal);
+
+				String description = updateTaskDto.description();
+				updateIfNotNull(description, task::setDescription);
+				
+				Boolean isCompleted = updateTaskDto.isCompleted();
+				updateIfNotNull(isCompleted, task::setIsCompleted);
+				
+				this.taskRepository.save(task);
+				return ResponseEntity.noContent().build();
+			} else {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+			}
+		} catch (HttpException e) {
+			return ResponseEntity.status(e.httpStatus).body(e.errorMessage);
 		}
-		
 	}
 	
 	private boolean theTaskIsTheUser(int taskId) {
@@ -125,7 +130,23 @@ public class TasksService {
 		} else {
 			return true;
 		}
+	}
+	
+	private <T> void updateIfNotNull(T value, Consumer<T> updateMethod) {
+		if (value != null) {
+			updateMethod.accept(value);
+		}
+	}
+	
+	private void updateTaskColumnId(Task task, int taskColumnId) {
+		TaskColumn taskColumn = this.taskColumnRepository.findById(taskColumnId).orElse(null);
 		
+		if (taskColumn == null) {
+			throw new TaskColumnNotFound();
+		}
+		
+		task.setTaskColumn(taskColumn);
+		this.taskRepository.save(task);
 	}
 
 }
