@@ -3,7 +3,8 @@ import { HTMLAttributes } from "react";
 import Gravatar from "react-gravatar";
 import { twMerge } from "tailwind-merge";
 
-interface UserProfileGravatarProps extends HTMLAttributes<HTMLDivElement> {
+export interface UserProfileGravatarProps
+    extends HTMLAttributes<HTMLDivElement> {
     email: string;
     size?: number;
 }

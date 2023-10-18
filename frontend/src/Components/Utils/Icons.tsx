@@ -1,5 +1,5 @@
 import { BiLogOutCircle } from "react-icons/bi";
-import { BsPlusCircle, BsXCircle } from "react-icons/bs";
+import { BsImages, BsPlusCircle, BsXCircle } from "react-icons/bs";
 import { FaAngleDown, FaAngleRight, FaTasks } from "react-icons/fa";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { IoMdMore } from "react-icons/io";
@@ -18,11 +18,13 @@ const EditIcon = <FiEdit />;
 const TrashIcon = <FiTrash2 />;
 const MoveIcon = <MdDragIndicator />;
 const AngleRightIcon = <FaAngleRight />;
+const ImageIcon = <BsImages />;
 
 export {
     AngleDownIcon,
     AngleRightIcon,
     EditIcon,
+    ImageIcon,
     LogoutIcon,
     MoonIcon,
     MoreIcon,

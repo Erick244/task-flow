@@ -22,11 +22,11 @@ public class TaskColumnsService {
 	private TaskColumnRepository taskColumnRepository;
 	
 	@Autowired
-	private AuthService authService;
+	private UsersService usersService;
 
 	public ResponseEntity<?> create(TaskColumnCreateDto taskColumnCreateDto) {
 		String title = taskColumnCreateDto.title();
-		User userAuth = this.authService.getUserAuth();
+		User userAuth = this.usersService.getUserAuth();
 
 		TaskColumn newTaskColumn = new TaskColumn(title, userAuth);
 		this.taskColumnRepository.save(newTaskColumn);
@@ -38,7 +38,7 @@ public class TaskColumnsService {
 	public ResponseEntity<Iterable<TaskColumn>> syncTaskColumns(SyncTaskColumnsDto syncTaskColumnsDto) {
 
 		List<Integer> taskColumnsIds = syncTaskColumnsDto.taskColumnsIds();
-		int userAuthId = this.authService.getUserAuth().getId();
+		int userAuthId = this.usersService.getUserAuth().getId();
 
 		if (taskColumnsIds == null || taskColumnsIds.isEmpty()) {
 			return this.findAll();
@@ -51,7 +51,7 @@ public class TaskColumnsService {
 	}
 	
 	public ResponseEntity<Iterable<TaskColumn>> findAll() {
-		int userAuthId = this.authService.getUserAuth().getId();
+		int userAuthId = this.usersService.getUserAuth().getId();
 		
 		Iterable<TaskColumn> userTaskColumns = this.taskColumnRepository.findAllByUserId(userAuthId);
 
@@ -87,7 +87,7 @@ public class TaskColumnsService {
 	}
 	
 	private boolean theTaskColumnIsTheUser(int taskColumnId) {
-		int userAuthId = this.authService.getUserAuth().getId();
+		int userAuthId = this.usersService.getUserAuth().getId();
 		TaskColumn taskColumn = this.taskColumnRepository.findByIdAndUserId(taskColumnId, userAuthId);
 		
 		if (taskColumn == null) {

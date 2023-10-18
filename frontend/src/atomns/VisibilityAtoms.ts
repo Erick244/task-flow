@@ -14,4 +14,10 @@ const floatMenuvisibilityAtom = atom<FloatMenuvisibilityProps>(
     {} as FloatMenuvisibilityProps
 );
 
-export { floatMenuvisibilityAtom, menuDropDownVisibilityAtom };
+const updateUserFormVisibilityAtom = atom<boolean>(false);
+
+export {
+    floatMenuvisibilityAtom,
+    menuDropDownVisibilityAtom,
+    updateUserFormVisibilityAtom,
+};

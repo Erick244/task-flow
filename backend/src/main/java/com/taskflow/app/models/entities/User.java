@@ -1,6 +1,5 @@
 package com.taskflow.app.models.entities;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,11 +41,11 @@ public class User {
 	private List<Task> tasks;
 	
 	@Column(nullable = true)
-	private URL avatarUrl;
+	private String avatarUrl;
 	
 	public User() {}
 	
-	public User(@NotBlank String username, @NotBlank String email, @NotBlank String password, URL avatarUrl) {
+	public User(@NotBlank String username, @NotBlank String email, @NotBlank String password, String avatarUrl) {
 		super();
 		this.username = username;
 		this.email = email;
@@ -79,11 +78,11 @@ public class User {
 		this.taskColumns = taskColumns;
 	}
 
-	public URL getAvatarUrl() {
+	public String getAvatarUrl() {
 		return avatarUrl;
 	}
 
-	public void setAvatarUrl(URL avatarUrl) {
+	public void setAvatarUrl(String avatarUrl) {
 		this.avatarUrl = avatarUrl;
 	}
 

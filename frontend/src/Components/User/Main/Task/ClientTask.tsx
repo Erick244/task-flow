@@ -3,7 +3,7 @@ import DefaultFloatMenu from "@/Components/Menus/DefaultFloatMenu";
 import { Task } from "@/Components/Templates/Main/Task";
 import CloseArea from "@/Components/Utils/CloseArea";
 import { MoreIcon } from "@/Components/Utils/Icons";
-import { taskFormStateAtom } from "@/atomns/FormsAtoms";
+import { taskFormStateAtom } from "@/atomns/StateAtoms";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
 import { getApiData, patchApiData } from "@/functions/ApiFunctions";
 import useFloatMenu from "@/hooks/useFloatMenu";

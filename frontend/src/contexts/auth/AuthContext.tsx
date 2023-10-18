@@ -9,7 +9,9 @@ import { HttpStatusCode } from "axios";
 import { useRouter } from "next/navigation";
 import { destroyCookie, setCookie } from "nookies";
 import {
+    Dispatch,
     ReactNode,
+    SetStateAction,
     createContext,
     useContext,
     useEffect,
@@ -21,6 +23,7 @@ interface AuthContextProps {
     signIn: (signInData: SignInFormData) => Promise<void>;
     logOut: () => void;
     user: UserModel | null;
+    setUser: Dispatch<SetStateAction<UserModel | null>>;
 }
 
 const AuthContext = createContext({} as AuthContextProps);
@@ -95,7 +98,7 @@ export default function AuthContextProvider({
     }
 
     return (
-        <AuthContext.Provider value={{ signUp, signIn, user, logOut }}>
+        <AuthContext.Provider value={{ signUp, signIn, user, logOut, setUser }}>
             {children}
         </AuthContext.Provider>
     );

@@ -2,7 +2,7 @@ import Image from "next/image";
 import { HTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
 
-interface UserProfileImageProps extends HTMLAttributes<HTMLDivElement> {
+export interface UserProfileImageProps extends HTMLAttributes<HTMLDivElement> {
     avatarUrl: string;
     width?: number;
     heigth?: number;

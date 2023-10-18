@@ -1,5 +1,5 @@
 "use client";
-import { taskFormStateAtom } from "@/atomns/FormsAtoms";
+import { taskFormStateAtom } from "@/atomns/StateAtoms";
 import { TaskModel } from "@/models/entities/Task.model";
 import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
 import { DndTypes } from "@/models/enums/DndTypes.enum";

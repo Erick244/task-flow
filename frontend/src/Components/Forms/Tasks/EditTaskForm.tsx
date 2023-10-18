@@ -1,7 +1,7 @@
 "use client";
 import { Form } from "@/Components/Templates/Form";
-import { PlusIcon } from "@/Components/Utils/Icons";
-import { taskFormStateAtom } from "@/atomns/FormsAtoms";
+import { EditIcon } from "@/Components/Utils/Icons";
+import { taskFormStateAtom } from "@/atomns/StateAtoms";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
 import { patchApiData } from "@/functions/ApiFunctions";
 import { stopClickPropagation } from "@/functions/EventsFunctions";
@@ -113,7 +113,7 @@ export default function EditTaskForm() {
                     <Form.SubmitButton
                         className="bg-blue-500 hover:bg-blue-600"
                         label="Edit"
-                        icon={PlusIcon}
+                        icon={EditIcon}
                     />
                 </div>
             </Form.Root>

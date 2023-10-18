@@ -1,7 +1,7 @@
 "use client";
 import { Form } from "@/Components/Templates/Form";
 import { PlusIcon, TrashIcon } from "@/Components/Utils/Icons";
-import { taskColumnFormStateAtom } from "@/atomns/FormsAtoms";
+import { taskColumnFormStateAtom } from "@/atomns/StateAtoms";
 import { stopClickPropagation } from "@/functions/EventsFunctions";
 import { FormActions } from "@/models/enums/FormActions.enum";
 import { useAtom } from "jotai";

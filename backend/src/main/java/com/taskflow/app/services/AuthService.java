@@ -1,13 +1,10 @@
 package com.taskflow.app.services;
 
-import java.net.URL;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,7 +35,7 @@ public class AuthService {
 		String username = signUpDto.username();
 		String password = signUpDto.password();
 		String confirmPassword = signUpDto.confirmPassword();
-		URL avatarUrl = signUpDto.avatarUrl();
+		String avatarUrl = signUpDto.avatarUrl();
 		
 		Boolean isEmailAlreadyUsed = userRepository.findByEmail(email) != null;
 		if (isEmailAlreadyUsed) {
@@ -74,12 +71,6 @@ public class AuthService {
 		LoginResponseDto loginResponseDto = new LoginResponseDto(user, token);
 		
 		return ResponseEntity.ok(loginResponseDto);
-	}
-	
-	public User getUserAuth() {
-		User userAuth = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
-		return userAuth;
 	}
 
 }

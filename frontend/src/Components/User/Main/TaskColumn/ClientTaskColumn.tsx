@@ -3,7 +3,7 @@ import DefaultFloatMenu from "@/Components/Menus/DefaultFloatMenu";
 import { TaskColumn } from "@/Components/Templates/Main/TaskColumn";
 import CloseArea from "@/Components/Utils/CloseArea";
 import { MoreIcon } from "@/Components/Utils/Icons";
-import { taskColumnFormStateAtom } from "@/atomns/FormsAtoms";
+import { taskColumnFormStateAtom } from "@/atomns/StateAtoms";
 import useFloatMenu from "@/hooks/useFloatMenu";
 import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
 import { FormActions } from "@/models/enums/FormActions.enum";

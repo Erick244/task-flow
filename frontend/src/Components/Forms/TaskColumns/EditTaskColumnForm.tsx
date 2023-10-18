@@ -1,7 +1,7 @@
 "use client";
 import { Form } from "@/Components/Templates/Form";
 import { PlusIcon } from "@/Components/Utils/Icons";
-import { taskColumnFormStateAtom } from "@/atomns/FormsAtoms";
+import { taskColumnFormStateAtom } from "@/atomns/StateAtoms";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
 import { patchApiData } from "@/functions/ApiFunctions";
 import { stopClickPropagation } from "@/functions/EventsFunctions";

@@ -19,11 +19,13 @@ interface FormInputProps
     label: string;
     disableLabelAnimation?: boolean;
     register?: UseFormRegisterReturn<string>;
+    removeLabel?: boolean;
 }
 
 export default function FormInput({
     label,
     disableLabelAnimation,
+    removeLabel,
     register,
     ...rest
 }: FormInputProps) {
@@ -37,12 +39,15 @@ export default function FormInput({
 
     return (
         <div className="w-full relative">
-            <FormInputLabel
-                inputId={inputId}
-                inputIsFocus={inputIsFocus}
-                label={label}
-                disableLabelAnimation={disableLabelAnimation}
-            />
+            {!removeLabel && (
+                <FormInputLabel
+                    inputId={inputId}
+                    inputIsFocus={inputIsFocus}
+                    label={label}
+                    disableLabelAnimation={disableLabelAnimation}
+                />
+            )}
+
             <input
                 {...rest}
                 id={inputId}

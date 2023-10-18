@@ -1,5 +1,6 @@
 import FormActionButton from "./FormActionButton";
 import FormAlertMessage from "./FormAlertMessage";
+import { FormAvatar } from "./FormAvatar";
 import FormContainer from "./FormContainer";
 import FormContainerButtons from "./FormContainerButtons";
 import FormInput from "./FormInput";
@@ -22,4 +23,5 @@ export const Form = {
     AlertMessage: FormAlertMessage,
     ContainerButtons: FormContainerButtons,
     Link: FormLink,
+    Avatar: FormAvatar,
 };

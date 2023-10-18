@@ -1,6 +1,6 @@
 "use client";
 import { DefaultLoadingPage } from "@/Components/Skeletons/Page/DefaultLoadingPage";
-import { taskColumnFormStateAtom } from "@/atomns/FormsAtoms";
+import { taskColumnFormStateAtom } from "@/atomns/StateAtoms";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
 import { FormActions } from "@/models/enums/FormActions.enum";
 import { DndContext } from "@dnd-kit/core";

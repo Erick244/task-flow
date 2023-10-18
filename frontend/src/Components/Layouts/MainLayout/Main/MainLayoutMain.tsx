@@ -5,11 +5,13 @@ import EditTaskColumnForm from "@/Components/Forms/TaskColumns/EditTaskColumnFor
 import CreateTaskForm from "@/Components/Forms/Tasks/CreateTaskForm";
 import DeleteTaskForm from "@/Components/Forms/Tasks/DeleteTaskForm";
 import EditTaskForm from "@/Components/Forms/Tasks/EditTaskForm";
+import { UpdateUserForm } from "@/Components/Forms/User/UpdateUserForm";
 import CloseArea from "@/Components/Utils/CloseArea";
 import {
     taskColumnFormStateAtom,
     taskFormStateAtom,
-} from "@/atomns/FormsAtoms";
+} from "@/atomns/StateAtoms";
+import { updateUserFormVisibilityAtom } from "@/atomns/VisibilityAtoms";
 import { FormActions } from "@/models/enums/FormActions.enum";
 import { useAtomValue } from "jotai";
 
@@ -24,10 +26,14 @@ export default function MainLayoutMain({ children }: MainLayoutMainProps) {
     const taskFormState = useAtomValue(taskFormStateAtom);
     const taksFormAction = taskFormState.formAction;
 
+    const updateUserFormIsVisible = useAtomValue(updateUserFormVisibilityAtom);
+
     return (
         <main className="w-full h-full flex-grow dark:bg-neutral-700 bg-stone-300 overflow-x-hidden">
             <CloseArea
-                isVisible={taskColumnFormState.visibility}
+                isVisible={
+                    taskColumnFormState.visibility || taskFormState.visibility
+                }
                 className="flex justify-center items-center"
             >
                 {taskColumnAction === FormActions.CREATE && (
@@ -48,6 +54,13 @@ export default function MainLayoutMain({ children }: MainLayoutMainProps) {
                 {taksFormAction === FormActions.CREATE && <CreateTaskForm />}
                 {taksFormAction === FormActions.DELETE && <DeleteTaskForm />}
                 {taksFormAction === FormActions.EDIT && <EditTaskForm />}
+            </CloseArea>
+
+            <CloseArea
+                isVisible={updateUserFormIsVisible}
+                className="flex justify-center items-center"
+            >
+                <UpdateUserForm />
             </CloseArea>
 
             {children}

@@ -1,7 +1,7 @@
 "use client";
 import { Form } from "@/Components/Templates/Form";
 import { TrashIcon } from "@/Components/Utils/Icons";
-import { taskColumnFormStateAtom } from "@/atomns/FormsAtoms";
+import { taskColumnFormStateAtom } from "@/atomns/StateAtoms";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
 import { deleteApiData } from "@/functions/ApiFunctions";
 import { stopClickPropagation } from "@/functions/EventsFunctions";

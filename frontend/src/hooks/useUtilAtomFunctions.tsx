@@ -2,14 +2,20 @@
 import {
     taskColumnFormStateAtom,
     taskFormStateAtom,
-} from "@/atomns/FormsAtoms";
-import { menuDropDownVisibilityAtom } from "@/atomns/VisibilityAtoms";
+} from "@/atomns/StateAtoms";
+import {
+    menuDropDownVisibilityAtom,
+    updateUserFormVisibilityAtom,
+} from "@/atomns/VisibilityAtoms";
 import { useSetAtom } from "jotai";
 
 export default function useUtilAtomFunctions() {
     const setMenuVisibility = useSetAtom(menuDropDownVisibilityAtom);
     const setTaskColumnFormVisibility = useSetAtom(taskColumnFormStateAtom);
     const setSaveTaskFormVisibility = useSetAtom(taskFormStateAtom);
+    const setUpdateUserFormVisibility = useSetAtom(
+        updateUserFormVisibilityAtom
+    );
 
     function closeAllVisibilityAtoms() {
         setMenuVisibility(false);
@@ -27,6 +33,8 @@ export default function useUtilAtomFunctions() {
                 visibility: false,
             };
         });
+
+        setUpdateUserFormVisibility(false);
     }
 
     return {

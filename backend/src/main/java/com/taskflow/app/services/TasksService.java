@@ -29,7 +29,7 @@ public class TasksService {
 	private TaskRepository taskRepository;
 	
 	@Autowired
-	private AuthService authService;
+	private UsersService usersService;
 
 	public ResponseEntity<?> create(TaskCreateDto taskCreateDto) {
 		int taskColumnId = taskCreateDto.taskColumnId();
@@ -38,7 +38,7 @@ public class TasksService {
 		Boolean isCompleted = taskCreateDto.isCompleted();
 		
 		TaskColumn taskColumn = this.taskColumnRepository.findById(taskColumnId).orElse(null);
-		User userAuth = this.authService.getUserAuth();
+		User userAuth = this.usersService.getUserAuth();
 
 		if (taskColumn == null || userAuth == null) {
 			return ResponseEntity.notFound().build();
@@ -53,7 +53,7 @@ public class TasksService {
 	public ResponseEntity<Iterable<Task>> syncTasks(SyncTasksDto syncTasksDto) {
 
 		List<Integer> tasksIds = syncTasksDto.tasksIds();
-		int userAuthId = this.authService.getUserAuth().getId();
+		int userAuthId = this.usersService.getUserAuth().getId();
 
 		if (tasksIds == null || tasksIds.isEmpty()) {
 			return this.findAll();
@@ -66,7 +66,7 @@ public class TasksService {
 	}
 
 	public ResponseEntity<Iterable<Task>> findAll() {
-		int userAuthId = this.authService.getUserAuth().getId();
+		int userAuthId = this.usersService.getUserAuth().getId();
 		
 		Iterable<Task> tasks = this.taskRepository.findAllByUserId(userAuthId);
 
@@ -74,7 +74,7 @@ public class TasksService {
 	}
 	
 	public ResponseEntity<?> delete(int taskId) {
-		int userAuthId = this.authService.getUserAuth().getId();
+		int userAuthId = this.usersService.getUserAuth().getId();
 		Task task = this.taskRepository.findById(taskId).orElse(null); 
 		
 		Boolean theTaskIsTheUser = task.getUser().getId() == userAuthId;
@@ -122,7 +122,7 @@ public class TasksService {
 	}
 	
 	private boolean theTaskIsTheUser(int taskId) {
-		int userAuthId = this.authService.getUserAuth().getId();
+		int userAuthId = this.usersService.getUserAuth().getId();
 		Task task = this.taskRepository.findByIdAndUserId(taskId, userAuthId);
 		
 		if (task == null) {
