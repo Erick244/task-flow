@@ -4,52 +4,24 @@ import { PlusIcon } from "@/Components/Utils/Icons";
 import { taskColumnFormStateAtom } from "@/atomns/StateAtoms";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
 import { postApiData } from "@/functions/ApiFunctions";
+import { defaultToast } from "@/functions/DefaultToasts";
 import { stopClickPropagation } from "@/functions/EventsFunctions";
+import {
+    SAVE_TASK_COLUMN_SCHEMA,
+    SaveTaskColumnFormData,
+} from "@/schemas/forms/save-task-column-form.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const CREATE_TASK_COLUMN_SCHEMA = z.object({
-    title: z.string().min(3).nonempty(),
-});
-
-type CreateTaskColumnFormData = z.infer<typeof CREATE_TASK_COLUMN_SCHEMA>;
 
 export default function CreateTaskColumnForm() {
-    const setTaskColumnFormState = useSetAtom(taskColumnFormStateAtom);
-
-    function closeCreateTaskColumnForm() {
-        setTaskColumnFormState((taskColumnFormState) => {
-            return {
-                ...taskColumnFormState,
-                visibility: false,
-            };
-        });
-    }
-
     const {
+        closeCreateTaskColumnForm,
+        errors,
+        handleCreateTaskColumn,
         handleSubmit,
         register,
-        formState: { errors },
-    } = useForm<CreateTaskColumnFormData>({
-        resolver: zodResolver(CREATE_TASK_COLUMN_SCHEMA),
-    });
-
-    const { fetchTaskColumns } = useTaskFlowDndContext();
-
-    async function handleCreateTaskColumn(
-        CreateTaskColumnFormData: CreateTaskColumnFormData
-    ) {
-        const createTaskColumnData = {
-            title: CreateTaskColumnFormData.title,
-        };
-
-        await postApiData("/taskColumns", createTaskColumnData);
-        await fetchTaskColumns();
-
-        closeCreateTaskColumnForm();
-    }
+    } = useCreateTaskColumnForm();
 
     return (
         <Form.Container
@@ -80,4 +52,49 @@ export default function CreateTaskColumnForm() {
             </Form.Root>
         </Form.Container>
     );
+}
+
+function useCreateTaskColumnForm() {
+    const setTaskColumnFormState = useSetAtom(taskColumnFormStateAtom);
+
+    function closeCreateTaskColumnForm() {
+        setTaskColumnFormState((taskColumnFormState) => {
+            return {
+                ...taskColumnFormState,
+                visibility: false,
+            };
+        });
+    }
+
+    const {
+        handleSubmit,
+        register,
+        formState: { errors },
+    } = useForm<SaveTaskColumnFormData>({
+        resolver: zodResolver(SAVE_TASK_COLUMN_SCHEMA),
+    });
+
+    const { fetchTaskColumns } = useTaskFlowDndContext();
+
+    async function handleCreateTaskColumn(
+        CreateTaskColumnFormData: SaveTaskColumnFormData
+    ) {
+        const createTaskColumnData = {
+            title: CreateTaskColumnFormData.title,
+        };
+
+        await postApiData("/taskColumns", createTaskColumnData);
+        await fetchTaskColumns();
+
+        closeCreateTaskColumnForm();
+        defaultToast("Task column created", "success");
+    }
+
+    return {
+        handleSubmit,
+        handleCreateTaskColumn,
+        closeCreateTaskColumnForm,
+        errors,
+        register,
+    };
 }

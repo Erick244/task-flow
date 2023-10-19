@@ -4,75 +4,26 @@ import { PlusIcon } from "@/Components/Utils/Icons";
 import { taskColumnFormStateAtom } from "@/atomns/StateAtoms";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
 import { patchApiData } from "@/functions/ApiFunctions";
+import { defaultToast } from "@/functions/DefaultToasts";
 import { stopClickPropagation } from "@/functions/EventsFunctions";
 import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
+import {
+    SAVE_TASK_COLUMN_SCHEMA,
+    SaveTaskColumnFormData,
+} from "@/schemas/forms/save-task-column-form.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const EDIT_TASK_COLUMN_SCHEMA = z.object({
-    title: z.string().min(3).nonempty(),
-});
-
-type EditTaskColumnFormData = z.infer<typeof EDIT_TASK_COLUMN_SCHEMA>;
 
 export default function EditTaskColumnForm() {
-    const [taskColumnFormState, setTaskColumnFormState] = useAtom(
-        taskColumnFormStateAtom
-    );
-
-    const { taskColumn } = taskColumnFormState;
-
-    function closeEditTaskColumnForm() {
-        setTaskColumnFormState((taskColumnFormState) => {
-            return {
-                ...taskColumnFormState,
-                visibility: false,
-            };
-        });
-    }
-
     const {
+        closeEditTaskColumnForm,
+        errors,
+        handleEditTaskColumn,
         handleSubmit,
         register,
-        formState: { errors },
-    } = useForm<EditTaskColumnFormData>({
-        resolver: zodResolver(EDIT_TASK_COLUMN_SCHEMA),
-        values: {
-            title: taskColumn?.title ?? "",
-        },
-    });
-
-    const { updateTasksColumnsInDnd, taskColumns } = useTaskFlowDndContext();
-
-    async function handleEditTaskColumn(
-        editTaskColumnFormData: EditTaskColumnFormData
-    ) {
-        if (!taskColumn?.id) return;
-
-        const editTaskColumn = {
-            id: taskColumn.id,
-            ...editTaskColumnFormData,
-        };
-
-        const updatedTaskColumns = taskColumns.map(
-            (dndTaskColumn: TaskColumnModel) => {
-                if (dndTaskColumn.id == taskColumn.id) {
-                    dndTaskColumn = editTaskColumn;
-                }
-
-                return dndTaskColumn;
-            }
-        );
-
-        updateTasksColumnsInDnd(updatedTaskColumns);
-        await patchApiData(`/tasks/${taskColumn.id}`, editTaskColumnFormData);
-
-        closeEditTaskColumnForm();
-    }
-
-    const disableLabelAnimation = !!taskColumn?.title;
+        disableLabelAnimation,
+    } = useEditTaskColumnForm();
 
     return (
         <Form.Container
@@ -107,4 +58,72 @@ export default function EditTaskColumnForm() {
             </Form.Root>
         </Form.Container>
     );
+}
+
+function useEditTaskColumnForm() {
+    const [taskColumnFormState, setTaskColumnFormState] = useAtom(
+        taskColumnFormStateAtom
+    );
+
+    const { taskColumn } = taskColumnFormState;
+
+    function closeEditTaskColumnForm() {
+        setTaskColumnFormState((taskColumnFormState) => {
+            return {
+                ...taskColumnFormState,
+                visibility: false,
+            };
+        });
+    }
+
+    const {
+        handleSubmit,
+        register,
+        formState: { errors },
+    } = useForm<SaveTaskColumnFormData>({
+        resolver: zodResolver(SAVE_TASK_COLUMN_SCHEMA),
+        values: {
+            title: taskColumn?.title ?? "",
+        },
+    });
+
+    const { updateTasksColumnsInDnd, taskColumns } = useTaskFlowDndContext();
+
+    async function handleEditTaskColumn(
+        editTaskColumnFormData: SaveTaskColumnFormData
+    ) {
+        if (!taskColumn?.id) return;
+
+        const editTaskColumn = {
+            id: taskColumn.id,
+            ...editTaskColumnFormData,
+        };
+
+        const updatedTaskColumns = taskColumns.map(
+            (dndTaskColumn: TaskColumnModel) => {
+                if (dndTaskColumn.id == taskColumn.id) {
+                    dndTaskColumn = editTaskColumn;
+                }
+
+                return dndTaskColumn;
+            }
+        );
+
+        updateTasksColumnsInDnd(updatedTaskColumns);
+        await patchApiData(`/tasks/${taskColumn.id}`, editTaskColumnFormData);
+
+        closeEditTaskColumnForm();
+        defaultToast("Task column edited", "success");
+    }
+
+    const disableLabelAnimation = !!taskColumn?.title;
+
+    return {
+        closeEditTaskColumnForm,
+        handleSubmit,
+        handleEditTaskColumn,
+        register,
+        errors,
+        disableLabelAnimation,
+    };
 }

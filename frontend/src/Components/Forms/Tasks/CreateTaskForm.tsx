@@ -4,53 +4,28 @@ import { PlusIcon } from "@/Components/Utils/Icons";
 import { taskFormStateAtom } from "@/atomns/StateAtoms";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
 import { postApiData } from "@/functions/ApiFunctions";
+import { defaultToast } from "@/functions/DefaultToasts";
 import { stopClickPropagation } from "@/functions/EventsFunctions";
+import {
+    SAVE_TASK_SCHEMA,
+    SaveTaskFormData,
+} from "@/schemas/forms/save-task-form.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const CREATE_TASK_SCHEMA = z.object({
-    goal: z.string().nonempty(),
-    description: z.string().max(150).nullable(),
-});
-
-type CreateTaskFormData = z.infer<typeof CREATE_TASK_SCHEMA>;
 
 export default function CreateTaskForm() {
-    const [taskFormState, setTaskFormState] = useAtom(taskFormStateAtom);
-    const { taskColumn, task } = taskFormState;
-
-    function closeCreateTaskForm() {
-        setTaskFormState({
-            ...taskFormState,
-            visibility: false,
-        });
-    }
-
-    const disableLabelAnimation = !!task?.goal;
-
     const {
-        register,
+        closeCreateTaskForm,
+        disableLabelAnimation,
+        errors,
+        handleCreateTask,
         handleSubmit,
-        formState: { errors },
-    } = useForm<CreateTaskFormData>({
-        resolver: zodResolver(CREATE_TASK_SCHEMA),
-    });
+        register,
+        taskColumn,
+    } = useCreateTaskForm();
 
-    const { fetchTasks } = useTaskFlowDndContext();
-
-    async function handleCreateTask(createTaskFormData: CreateTaskFormData) {
-        const createTaskData = {
-            taskColumnId: taskColumn?.id,
-            ...createTaskFormData,
-        };
-
-        await postApiData("/tasks", createTaskData);
-        await fetchTasks();
-
-        closeCreateTaskForm();
-    }
+    if (!taskColumn) return <p>Loading....</p>; //TODO: Skeleton
 
     return (
         <Form.Container
@@ -60,7 +35,7 @@ export default function CreateTaskForm() {
             <div className="flex flex-col">
                 <Form.Title title="Create Task" className="mb-5" />
                 <Form.SubTitle
-                    title={taskColumn?.title || ""}
+                    title={taskColumn.title}
                     className="mb-10 self-center"
                 />
             </div>
@@ -102,4 +77,51 @@ export default function CreateTaskForm() {
             </Form.Root>
         </Form.Container>
     );
+}
+
+function useCreateTaskForm() {
+    const [taskFormState, setTaskFormState] = useAtom(taskFormStateAtom);
+    const { taskColumn, task } = taskFormState;
+
+    function closeCreateTaskForm() {
+        setTaskFormState({
+            ...taskFormState,
+            visibility: false,
+        });
+    }
+
+    const disableLabelAnimation = !!task?.goal;
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<SaveTaskFormData>({
+        resolver: zodResolver(SAVE_TASK_SCHEMA),
+    });
+
+    const { fetchTasksInDnd } = useTaskFlowDndContext();
+
+    async function handleCreateTask(createTaskFormData: SaveTaskFormData) {
+        const createTaskData = {
+            taskColumnId: taskColumn?.id,
+            ...createTaskFormData,
+        };
+
+        await postApiData("/tasks", createTaskData);
+        await fetchTasksInDnd();
+
+        closeCreateTaskForm();
+        defaultToast("Task created", "success");
+    }
+
+    return {
+        taskColumn,
+        handleSubmit,
+        closeCreateTaskForm,
+        register,
+        handleCreateTask,
+        errors,
+        disableLabelAnimation,
+    };
 }

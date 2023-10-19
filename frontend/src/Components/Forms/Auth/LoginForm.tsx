@@ -2,6 +2,7 @@
 import { Form } from "@/Components/Templates/Form";
 import { AngleRightIcon } from "@/Components/Utils/Icons";
 import { useAuthContext } from "@/contexts/auth/AuthContext";
+import { defaultToast } from "@/functions/DefaultToasts";
 import {
     SIGNIN_SCHEMA,
     SignInFormData,
@@ -10,7 +11,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 
 export default function LoginForm() {
     const {
@@ -86,7 +86,7 @@ function useLoginForm() {
 
             await signIn(signInData);
         } catch (e: any) {
-            toast(e, { type: "warning", theme: "dark" });
+            defaultToast(e, "warning");
         } finally {
             setLoading(false);
         }

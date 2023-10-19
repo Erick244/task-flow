@@ -4,36 +4,17 @@ import { TrashIcon } from "@/Components/Utils/Icons";
 import { taskFormStateAtom } from "@/atomns/StateAtoms";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
 import { deleteApiData } from "@/functions/ApiFunctions";
+import { defaultToast } from "@/functions/DefaultToasts";
 import { stopClickPropagation } from "@/functions/EventsFunctions";
 import { TaskModel } from "@/models/entities/Task.model";
 import { useAtom } from "jotai";
 import { FormEvent } from "react";
 
 export default function DeleteTaskForm() {
-    const [taskFormState, setTaskFormState] = useAtom(taskFormStateAtom);
-    const { taskColumn, task } = taskFormState;
+    const { closeDeleteTaskForm, handleDeleteTask, task, taskColumn } =
+        useDeleteTaskForm();
 
-    function closeDeleteTaskForm() {
-        setTaskFormState({
-            ...taskFormState,
-            visibility: false,
-        });
-    }
-
-    const { updateTasksInDnd, tasks } = useTaskFlowDndContext();
-
-    async function handleDeleteTask(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-
-        const tasksUpdated = tasks?.filter(
-            (taskInLocalStorage: TaskModel) => taskInLocalStorage.id != task?.id
-        );
-
-        updateTasksInDnd(tasksUpdated ?? []);
-        await deleteApiData(`/tasks/${task?.id}`);
-
-        closeDeleteTaskForm();
-    }
+    if (!task || !taskColumn) return <p>Loading...</p>; //TODO: Skeleton
 
     return (
         <Form.Container
@@ -43,7 +24,7 @@ export default function DeleteTaskForm() {
             <div className="flex flex-col">
                 <Form.Title title="Delete Task" className="mb-5" />
                 <Form.SubTitle
-                    title={taskColumn?.title || ""}
+                    title={taskColumn.title}
                     className="mb-10 self-center"
                 />
             </div>
@@ -56,7 +37,7 @@ export default function DeleteTaskForm() {
                 />
 
                 <Form.TextArea
-                    value={task?.description || ""}
+                    value={task.description ?? ""}
                     label="Description (Optional)"
                     maxLength={150}
                     placeholder="Create a description for your goal, ex: Drinking water..."
@@ -82,4 +63,39 @@ export default function DeleteTaskForm() {
             </Form.Root>
         </Form.Container>
     );
+}
+
+function useDeleteTaskForm() {
+    const [taskFormState, setTaskFormState] = useAtom(taskFormStateAtom);
+    const { taskColumn, task } = taskFormState;
+
+    function closeDeleteTaskForm() {
+        setTaskFormState({
+            ...taskFormState,
+            visibility: false,
+        });
+    }
+
+    const { updateTasksInDnd, tasks } = useTaskFlowDndContext();
+
+    async function handleDeleteTask(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        const tasksUpdated = tasks?.filter(
+            (taskInLocalStorage: TaskModel) => taskInLocalStorage.id != task?.id
+        );
+
+        updateTasksInDnd(tasksUpdated ?? []);
+        await deleteApiData(`/tasks/${task?.id}`);
+
+        closeDeleteTaskForm();
+        defaultToast("Task deleted", "success");
+    }
+
+    return {
+        closeDeleteTaskForm,
+        taskColumn,
+        handleDeleteTask,
+        task,
+    };
 }

@@ -4,73 +4,30 @@ import { EditIcon } from "@/Components/Utils/Icons";
 import { updateUserFormVisibilityAtom } from "@/atomns/VisibilityAtoms";
 import { useAuthContext } from "@/contexts/auth/AuthContext";
 import { patchApiData } from "@/functions/ApiFunctions";
+import { defaultToast } from "@/functions/DefaultToasts";
 import { stopClickPropagation } from "@/functions/EventsFunctions";
 import { UserModel } from "@/models/entities/User.model";
+import {
+    UPDATE_USER_SCHEMA,
+    UpdateUserFormData,
+} from "@/schemas/forms/update-user-form.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSetAtom } from "jotai";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import { z } from "zod";
-
-const UPDATE_USER_SCHEMA = z.object({
-    username: z.string().min(3).max(20),
-    avatarFile: z.any().nullable(),
-});
-
-type UpdateUserFormData = z.infer<typeof UPDATE_USER_SCHEMA>;
 
 export function UpdateUserForm() {
-    const { user, setUser } = useAuthContext();
-    const setUpdateUserFormVisibility = useSetAtom(
-        updateUserFormVisibilityAtom
-    );
-
-    function closeUpdateUserForm() {
-        setUpdateUserFormVisibility(false);
-    }
-
     const {
-        register,
+        user,
+        closeUpdateUserForm,
+        errors,
         handleSubmit,
-        formState: { errors },
-    } = useForm<UpdateUserFormData>({
-        resolver: zodResolver(UPDATE_USER_SCHEMA),
-        values: {
-            username: user?.username ?? "",
-        },
-    });
+        handleUpdateUser,
+        register,
+    } = useUpdateUserForm();
 
     if (!user) return <p>Loading....</p>; //TODO: Skeleton
 
-    const { email, avatarUrl, username } = user;
-
-    async function handleUpdateUser(updateUserFormData: UpdateUserFormData) {
-        if (!user?.id) return;
-
-        const { username, avatarFile } = updateUserFormData;
-        const image = avatarFile[0];
-        const avatarUrl = image ? URL.createObjectURL(avatarFile[0]) : null;
-
-        const updateUserData = {
-            username,
-            avatarUrl,
-        };
-        await patchApiData("/users", updateUserData);
-
-        const updatedUser: UserModel | null = {
-            ...user,
-            ...updateUserData,
-        };
-
-        setUser(updatedUser);
-        closeUpdateUserForm();
-
-        toast("Profile updated", {
-            type: "success",
-            theme: "dark",
-            position: "top-center",
-        });
-    }
+    const { email, username, avatarUrl } = user;
 
     const disableLabelAnimation = !!username;
 
@@ -117,4 +74,59 @@ export function UpdateUserForm() {
             </Form.Root>
         </Form.Container>
     );
+}
+
+function useUpdateUserForm() {
+    const { user, setUser } = useAuthContext();
+    const setUpdateUserFormVisibility = useSetAtom(
+        updateUserFormVisibilityAtom
+    );
+
+    function closeUpdateUserForm() {
+        setUpdateUserFormVisibility(false);
+    }
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<UpdateUserFormData>({
+        resolver: zodResolver(UPDATE_USER_SCHEMA),
+        values: {
+            username: user?.username ?? "",
+        },
+    });
+
+    async function handleUpdateUser(updateUserFormData: UpdateUserFormData) {
+        if (!user?.id) return;
+
+        const { username, avatarFile } = updateUserFormData;
+        const image = avatarFile[0];
+        const avatarUrl = image ? URL.createObjectURL(avatarFile[0]) : null;
+
+        const updateUserData = {
+            username,
+            avatarUrl,
+        };
+        await patchApiData("/users", updateUserData);
+
+        const updatedUser: UserModel | null = {
+            ...user,
+            ...updateUserData,
+        };
+
+        setUser(updatedUser);
+        closeUpdateUserForm();
+
+        defaultToast("Profile updated", "success");
+    }
+
+    return {
+        user,
+        closeUpdateUserForm,
+        register,
+        errors,
+        handleSubmit,
+        handleUpdateUser,
+    };
 }

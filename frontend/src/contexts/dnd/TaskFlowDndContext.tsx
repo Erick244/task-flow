@@ -30,7 +30,7 @@ interface TaskFlowDndContextProps {
     handlerOnDragOver: (event: DragOverEvent) => void;
     handlerOnDragStart: (event: DragStartEvent) => void;
     sensors: SensorDescriptor<SensorOptions>[];
-    fetchTasks: () => Promise<void>;
+    fetchTasksInDnd: () => Promise<void>;
     updateTasksInDnd: (tasks: TaskModel[]) => void;
     fetchTaskColumns: () => Promise<void>;
     updateTasksColumnsInDnd: (taskColumns: TaskColumnModel[]) => void;
@@ -75,7 +75,7 @@ export default function TaskFlowDndContextProvider({
         (taskColumn) => taskColumn.id
     );
 
-    async function fetchTasks() {
+    async function fetchTasksInDnd() {
         try {
             const tasksData = await postApiData<TaskModel[]>("/tasks/sync", {
                 tasksIds: tasksStorageIds,
@@ -145,7 +145,7 @@ export default function TaskFlowDndContextProvider({
 
     useEffect(() => {
         if (!tasksStorageLoading) {
-            fetchTasks();
+            fetchTasksInDnd();
         }
 
         if (!taskColumnsLoading) {
@@ -316,7 +316,7 @@ export default function TaskFlowDndContextProvider({
                 updateTasksColumnsInDnd,
                 fetchTaskColumns,
                 updateTasksInDnd,
-                fetchTasks,
+                fetchTasksInDnd,
                 taskColumns,
                 tasks,
                 dataFetchingIsLoading,
