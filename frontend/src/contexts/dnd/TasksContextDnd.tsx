@@ -15,7 +15,7 @@ interface TasksContextDndProps {
     tasks: TaskModel[];
     setTasks: Dispatch<SetStateAction<TaskModel[]>>;
     tasksStorage: TaskModel[] | null;
-    setTasksStorage: Dispatch<SetStateAction<TaskModel[] | null>>;
+    setTasksStorage: (tasksStorage: TaskModel[]) => void;
     tasksStorageLoading: boolean;
     fetchTasksInDnd: () => Promise<void>;
     loadingTasks: boolean;

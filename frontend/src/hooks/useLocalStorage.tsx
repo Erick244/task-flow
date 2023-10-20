@@ -1,10 +1,6 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-type useLocalStorageReturnType<T> = [
-    T | null,
-    Dispatch<SetStateAction<T | null>>,
-    boolean
-];
+type useLocalStorageReturnType<T> = [T | null, (item: T) => void, boolean];
 
 export default function useLocalStorage<T>(
     key: string,
@@ -35,17 +31,14 @@ export default function useLocalStorage<T>(
         getLocalStorageItem();
     }, [key]);
 
-    useEffect(() => {
-        function setLocalStorageItem() {
-            try {
-                localStorage.setItem(key, JSON.stringify(item));
-            } catch (e) {
-                console.error(e);
-            }
+    function updateItem(item: T) {
+        try {
+            setItem(item);
+            localStorage.setItem(key, JSON.stringify(item));
+        } catch (e) {
+            console.error(e);
         }
+    }
 
-        setLocalStorageItem();
-    }, [item, key]);
-
-    return [item, setItem, loading];
+    return [item, updateItem, loading];
 }
