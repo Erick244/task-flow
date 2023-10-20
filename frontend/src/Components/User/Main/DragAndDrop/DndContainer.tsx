@@ -1,7 +1,9 @@
 "use client";
 import { DefaultLoadingPage } from "@/Components/Skeletons/Page/DefaultLoadingPage";
 import { taskColumnFormStateAtom } from "@/atomns/StateAtoms";
+import { useTaskColumnsDndContext } from "@/contexts/dnd/TaskColumnsDndContext";
 import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
+import { useTasksDndContext } from "@/contexts/dnd/TasksDndContext";
 import { FormActions } from "@/models/enums/FormActions.enum";
 import { DndContext } from "@dnd-kit/core";
 import { useSetAtom } from "jotai";
@@ -10,9 +12,10 @@ import DndDragOverlay from "./DndDragOverlay";
 import DndContainerTaskColumns from "./TaskColumn/DndContainerTaskColumns";
 
 export default function DndContainer() {
+    const { taskColumns } = useTaskColumnsDndContext();
+    const { tasks } = useTasksDndContext();
+
     const {
-        taskColumns,
-        tasks,
         activeTask,
         dataFetchingIsLoading,
         activeTaskColumn,

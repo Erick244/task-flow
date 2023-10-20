@@ -19,10 +19,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useTaskColumnsDndContext } from "./TaskColumnsDndContext";
 import { useTasksDndContext } from "./TasksDndContext";
 
-//TODO: Separar em dois
 interface TaskFlowDndContextProps {
-    tasks: TaskModel[];
-    taskColumns: TaskColumnModel[];
     dataFetchingIsLoading: boolean;
     activeTaskColumn: TaskColumnModel | null;
     activeTask: TaskModel | null;
@@ -30,10 +27,6 @@ interface TaskFlowDndContextProps {
     handlerOnDragOver: (event: DragOverEvent) => void;
     handlerOnDragStart: (event: DragStartEvent) => void;
     sensors: SensorDescriptor<SensorOptions>[];
-    fetchTasksInDnd: () => Promise<void>;
-    updateTasksInDnd: (tasks: TaskModel[]) => void;
-    fetchTaskColumnsInDnd: () => Promise<void>;
-    updateTasksColumnsInDnd: (taskColumns: TaskColumnModel[]) => void;
 }
 
 const TaskFlowDndContext = createContext({} as TaskFlowDndContextProps);
@@ -46,23 +39,19 @@ export default function TaskFlowDndContextProvider({
     const {
         setTasks,
         setTasksStorage,
-        tasks,
         tasksStorage,
         tasksStorageLoading,
         fetchTasksInDnd,
         loadingTasks,
-        updateTasksInDnd,
     } = useTasksDndContext();
 
     const {
         setTaskColumns,
-        taskColumns,
         setTaskColumnsStorage,
         taskColumnsStorage,
         taskColumnsStorageLoading,
         fetchTaskColumnsInDnd,
         loadingTaskColumns,
-        updateTasksColumnsInDnd,
     } = useTaskColumnsDndContext();
 
     function setInitialValueInTasksAndTaskColumns() {
@@ -158,6 +147,18 @@ export default function TaskFlowDndContextProvider({
         }
     }
 
+    function getNumberIdInDdn(dndId: string | number) {
+        const selectIdNumberRegex = /[ ][-][ ]\b[^\d\s-]+\b/; // '1' - Text
+        return Number(dndId.toString().replace(selectIdNumberRegex, " "));
+    }
+
+    function findIndexById(
+        items: TaskModel[] | TaskColumnModel[],
+        compareId: number
+    ) {
+        return items.findIndex((item) => compareId === item.id);
+    }
+
     function resetActiveItems() {
         setActiveTask(null);
         setActiveTaskColumn(null);
@@ -231,27 +232,9 @@ export default function TaskFlowDndContextProvider({
         }
     }
 
-    function findIndexById(
-        items: TaskModel[] | TaskColumnModel[],
-        compareId: number
-    ) {
-        return items.findIndex((item) => compareId === item.id);
-    }
-
-    function getNumberIdInDdn(dndId: string | number) {
-        const selectIdNumberRegex = /[ ][-][ ]\b[^\d\s-]+\b/; // '1' - Text
-        return Number(dndId.toString().replace(selectIdNumberRegex, " "));
-    }
-
     return (
         <TaskFlowDndContext.Provider
             value={{
-                updateTasksColumnsInDnd,
-                fetchTaskColumnsInDnd,
-                updateTasksInDnd,
-                fetchTasksInDnd,
-                taskColumns,
-                tasks,
                 dataFetchingIsLoading,
                 activeTask,
                 activeTaskColumn,

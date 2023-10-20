@@ -4,7 +4,7 @@ import { Task } from "@/Components/Templates/Main/Task";
 import CloseArea from "@/Components/Utils/CloseArea";
 import { MoreIcon } from "@/Components/Utils/Icons";
 import { taskFormStateAtom } from "@/atomns/StateAtoms";
-import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
+import { useTasksDndContext } from "@/contexts/dnd/TasksDndContext";
 import { getApiData, patchApiData } from "@/functions/ApiFunctions";
 import useFloatMenu from "@/hooks/useFloatMenu";
 import { TaskModel } from "@/models/entities/Task.model";
@@ -71,7 +71,8 @@ const ClientTask = forwardRef(
             });
         }
 
-        const { tasks, updateTasksInDnd } = useTaskFlowDndContext();
+        const { tasks, updateTasksInDnd } = useTasksDndContext();
+
         async function handleCheckBox() {
             const newCheckBoxState = !task.isCompleted;
 

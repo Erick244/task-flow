@@ -2,7 +2,7 @@
 import { Form } from "@/Components/Templates/Form";
 import { TrashIcon } from "@/Components/Utils/Icons";
 import { taskColumnFormStateAtom } from "@/atomns/StateAtoms";
-import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
+import { useTaskColumnsDndContext } from "@/contexts/dnd/TaskColumnsDndContext";
 import { deleteApiData } from "@/functions/ApiFunctions";
 import { defaultToast } from "@/functions/DefaultToasts";
 import { stopClickPropagation } from "@/functions/EventsFunctions";
@@ -67,7 +67,7 @@ function useDeleteTaskColumnForm() {
         });
     }
 
-    const { updateTasksColumnsInDnd, taskColumns } = useTaskFlowDndContext();
+    const { taskColumns, updateTasksColumnsInDnd } = useTaskColumnsDndContext();
 
     async function handleDeleteTaskColumn(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();

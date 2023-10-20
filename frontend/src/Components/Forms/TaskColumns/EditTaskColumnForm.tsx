@@ -2,7 +2,7 @@
 import { Form } from "@/Components/Templates/Form";
 import { PlusIcon } from "@/Components/Utils/Icons";
 import { taskColumnFormStateAtom } from "@/atomns/StateAtoms";
-import { useTaskFlowDndContext } from "@/contexts/dnd/TaskFlowDndContext";
+import { useTaskColumnsDndContext } from "@/contexts/dnd/TaskColumnsDndContext";
 import { patchApiData } from "@/functions/ApiFunctions";
 import { defaultToast } from "@/functions/DefaultToasts";
 import { stopClickPropagation } from "@/functions/EventsFunctions";
@@ -87,7 +87,7 @@ function useEditTaskColumnForm() {
         },
     });
 
-    const { updateTasksColumnsInDnd, taskColumns } = useTaskFlowDndContext();
+    const { taskColumns, updateTasksColumnsInDnd } = useTaskColumnsDndContext();
 
     async function handleEditTaskColumn(
         editTaskColumnFormData: SaveTaskColumnFormData
