@@ -1,6 +1,5 @@
 "use client";
-import { patchApiData, postApiData } from "@/functions/ApiFunctions";
-import useLocalStorage from "@/hooks/useLocalStorage";
+import { patchApiData } from "@/functions/ApiFunctions";
 import { TaskModel } from "@/models/entities/Task.model";
 import { TaskColumnModel } from "@/models/entities/TaskColumn.model";
 import { DndTypes } from "@/models/enums/DndTypes.enum";
@@ -17,8 +16,8 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useAuthContext } from "../auth/AuthContext";
-import { useTasksContextDnd } from "./TasksContextDnd";
+import { useTaskColumnsDndContext } from "./TaskColumnsDndContext";
+import { useTasksDndContext } from "./TasksDndContext";
 
 //TODO: Separar em dois
 interface TaskFlowDndContextProps {
@@ -33,7 +32,7 @@ interface TaskFlowDndContextProps {
     sensors: SensorDescriptor<SensorOptions>[];
     fetchTasksInDnd: () => Promise<void>;
     updateTasksInDnd: (tasks: TaskModel[]) => void;
-    fetchTaskColumns: () => Promise<void>;
+    fetchTaskColumnsInDnd: () => Promise<void>;
     updateTasksColumnsInDnd: (taskColumns: TaskColumnModel[]) => void;
 }
 
@@ -53,16 +52,18 @@ export default function TaskFlowDndContextProvider({
         fetchTasksInDnd,
         loadingTasks,
         updateTasksInDnd,
-    } = useTasksContextDnd();
+    } = useTasksDndContext();
 
-    const [taskColumns, setTaskColumns] = useState<TaskColumnModel[]>([]);
-    const [loadingTaskColumns, setLoadingTaskColumns] = useState<boolean>(true);
-
-    const { user } = useAuthContext();
-
-    const taskColumnsLocalStorageKey = `task_columns_order_${user?.id}`;
-    const [taskColumnsStorage, setTaskColumnsStorage, taskColumnsLoading] =
-        useLocalStorage<TaskColumnModel[]>(taskColumnsLocalStorageKey, []);
+    const {
+        setTaskColumns,
+        taskColumns,
+        setTaskColumnsStorage,
+        taskColumnsStorage,
+        taskColumnsStorageLoading,
+        fetchTaskColumnsInDnd,
+        loadingTaskColumns,
+        updateTasksColumnsInDnd,
+    } = useTaskColumnsDndContext();
 
     function setInitialValueInTasksAndTaskColumns() {
         setTasks(tasksStorage ?? []);
@@ -75,57 +76,16 @@ export default function TaskFlowDndContextProvider({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const taskColumnsStorageIds = taskColumnsStorage?.map(
-        (taskColumn) => taskColumn.id
-    );
-
-    async function fetchTaskColumns() {
-        try {
-            const taskColumnsData = await postApiData<TaskColumnModel[]>(
-                "/taskColumns/sync",
-                {
-                    taskColumnsIds: taskColumnsStorageIds,
-                }
-            );
-
-            syncTaskColumnsInLocalStorage(taskColumnsData);
-
-            setLoadingTaskColumns(false);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    function updateTasksColumnsInDnd(taskColumns: TaskColumnModel[]) {
-        setTaskColumnsStorage(taskColumns);
-        setTaskColumns(taskColumns);
-    }
-
-    function syncTaskColumnsInLocalStorage(taskColumnsData: TaskColumnModel[]) {
-        const existTaskColumnsStorageIds = Array.isArray(taskColumnsStorageIds);
-
-        if (existTaskColumnsStorageIds) {
-            setTaskColumnsStorage([
-                ...(taskColumnsStorage ?? []),
-                ...taskColumnsData,
-            ]);
-            setTaskColumns([...(taskColumnsStorage ?? []), ...taskColumnsData]);
-        } else {
-            setTaskColumnsStorage(taskColumnsData);
-            setTaskColumns(taskColumnsData);
-        }
-    }
-
     useEffect(() => {
         if (!tasksStorageLoading) {
             fetchTasksInDnd();
         }
 
-        if (!taskColumnsLoading) {
-            fetchTaskColumns();
+        if (!taskColumnsStorageLoading) {
+            fetchTaskColumnsInDnd();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tasksStorageLoading, taskColumnsLoading]);
+    }, [tasksStorageLoading, taskColumnsStorageLoading]);
 
     const dataFetchingIsLoading = loadingTasks || loadingTaskColumns;
 
@@ -287,7 +247,7 @@ export default function TaskFlowDndContextProvider({
         <TaskFlowDndContext.Provider
             value={{
                 updateTasksColumnsInDnd,
-                fetchTaskColumns,
+                fetchTaskColumnsInDnd,
                 updateTasksInDnd,
                 fetchTasksInDnd,
                 taskColumns,

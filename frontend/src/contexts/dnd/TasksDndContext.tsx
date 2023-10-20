@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useAuthContext } from "../auth/AuthContext";
 
-interface TasksContextDndProps {
+interface TasksDndContextProps {
     tasks: TaskModel[];
     setTasks: Dispatch<SetStateAction<TaskModel[]>>;
     tasksStorage: TaskModel[] | null;
@@ -22,9 +22,9 @@ interface TasksContextDndProps {
     updateTasksInDnd: (tasks: TaskModel[]) => void;
 }
 
-const TasksContextDnd = createContext({} as TasksContextDndProps);
+const TasksDndContext = createContext({} as TasksDndContextProps);
 
-export default function TasksContextDndProvider({
+export default function TasksDndContextProvider({
     children,
 }: {
     children: React.ReactNode;
@@ -72,7 +72,7 @@ export default function TasksContextDndProvider({
     }
 
     return (
-        <TasksContextDnd.Provider
+        <TasksDndContext.Provider
             value={{
                 tasks,
                 setTasks,
@@ -85,8 +85,8 @@ export default function TasksContextDndProvider({
             }}
         >
             {children}
-        </TasksContextDnd.Provider>
+        </TasksDndContext.Provider>
     );
 }
 
-export const useTasksContextDnd = () => useContext(TasksContextDnd);
+export const useTasksDndContext = () => useContext(TasksDndContext);

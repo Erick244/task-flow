@@ -74,7 +74,7 @@ function useCreateTaskColumnForm() {
         resolver: zodResolver(SAVE_TASK_COLUMN_SCHEMA),
     });
 
-    const { fetchTaskColumns } = useTaskFlowDndContext();
+    const { fetchTaskColumnsInDnd } = useTaskFlowDndContext();
 
     async function handleCreateTaskColumn(
         CreateTaskColumnFormData: SaveTaskColumnFormData
@@ -84,7 +84,7 @@ function useCreateTaskColumnForm() {
         };
 
         await postApiData("/taskColumns", createTaskColumnData);
-        await fetchTaskColumns();
+        await fetchTaskColumnsInDnd();
 
         closeCreateTaskColumnForm();
         defaultToast("Task column created", "success");
