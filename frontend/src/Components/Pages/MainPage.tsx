@@ -1,6 +1,6 @@
 "use client";
+import { MainProviders } from "@/app/main/Providers";
 import { useAuthContext } from "@/contexts/auth/AuthContext";
-import TaskFlowDndContextProvider from "@/contexts/dnd/TaskFlowDndContext";
 import MainLayoutMain from "../Layouts/MainLayout/Main/MainLayoutMain";
 import { DefaultLoadingPage } from "../Skeletons/Page/DefaultLoadingPage";
 import DndContainer from "../User/Main/DragAndDrop/DndContainer";
@@ -11,10 +11,10 @@ export default function MainPage() {
     if (!user) return <DefaultLoadingPage />;
 
     return (
-        <TaskFlowDndContextProvider>
+        <MainProviders>
             <MainLayoutMain>
                 <DndContainer />
             </MainLayoutMain>
-        </TaskFlowDndContextProvider>
+        </MainProviders>
     );
 }

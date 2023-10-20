@@ -18,6 +18,7 @@ import {
 import { arrayMove } from "@dnd-kit/sortable";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
+import { useTasksContextDnd } from "./TasksContextDnd";
 
 //TODO: Separar em dois
 interface TaskFlowDndContextProps {
@@ -38,24 +39,26 @@ interface TaskFlowDndContextProps {
 
 const TaskFlowDndContext = createContext({} as TaskFlowDndContextProps);
 
-//TESTE
-
 export default function TaskFlowDndContextProvider({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const [tasks, setTasks] = useState<TaskModel[]>([]);
-    const [loadingTasks, setLoadingTasks] = useState<boolean>(true);
+    const {
+        setTasks,
+        setTasksStorage,
+        tasks,
+        tasksStorage,
+        tasksStorageLoading,
+        fetchTasksInDnd,
+        loadingTasks,
+        updateTasksInDnd,
+    } = useTasksContextDnd();
 
     const [taskColumns, setTaskColumns] = useState<TaskColumnModel[]>([]);
     const [loadingTaskColumns, setLoadingTaskColumns] = useState<boolean>(true);
 
     const { user } = useAuthContext();
-
-    const tasksLocalStorageKey = `tasks_order_${user?.id}`;
-    const [tasksStorage, setTasksStorage, tasksStorageLoading] =
-        useLocalStorage<TaskModel[]>(tasksLocalStorageKey, []);
 
     const taskColumnsLocalStorageKey = `task_columns_order_${user?.id}`;
     const [taskColumnsStorage, setTaskColumnsStorage, taskColumnsLoading] =
@@ -72,41 +75,9 @@ export default function TaskFlowDndContextProvider({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const tasksStorageIds = tasksStorage?.map((task) => task.id);
     const taskColumnsStorageIds = taskColumnsStorage?.map(
         (taskColumn) => taskColumn.id
     );
-
-    async function fetchTasksInDnd() {
-        try {
-            const tasksData = await postApiData<TaskModel[]>("/tasks/sync", {
-                tasksIds: tasksStorageIds,
-            });
-
-            syncTasksInLocalStorage(tasksData);
-
-            setLoadingTasks(false);
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    function updateTasksInDnd(tasks: TaskModel[]) {
-        setTasksStorage(tasks);
-        setTasks(tasks);
-    }
-
-    function syncTasksInLocalStorage(tasksData: TaskModel[]) {
-        const existTasksStorageIds = Array.isArray(tasksStorageIds);
-
-        if (existTasksStorageIds) {
-            setTasksStorage([...(tasksStorage ?? []), ...tasksData]);
-            setTasks([...(tasksStorage ?? []), ...tasksData]);
-        } else {
-            setTasksStorage(tasksData);
-            setTasks(tasksData);
-        }
-    }
 
     async function fetchTaskColumns() {
         try {
