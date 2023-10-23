@@ -1,4 +1,5 @@
 "use client";
+import { UserProfileSkeleton } from "@/Components/Skeletons/Components/UserProfileSkeleton";
 import { UserProfile } from "@/Components/User/UserProfile";
 import { updateUserFormVisibilityAtom } from "@/atomns/VisibilityAtoms";
 import { useAuthContext } from "@/contexts/auth/AuthContext";
@@ -10,7 +11,7 @@ export default function MainLayoutUserProfile() {
         updateUserFormVisibilityAtom
     );
 
-    if (!user) return <p>Loading userprofile....</p>; //TODO: Skeleton
+    if (!user) return <UserProfileSkeleton />;
 
     const { avatarUrl, email, username } = user;
 
@@ -20,7 +21,7 @@ export default function MainLayoutUserProfile() {
 
     return (
         <UserProfile.Root
-            className="gap-2 cursor-pointer"
+            className="gap-2 cursor-pointer hover:opacity-80"
             onClick={toggleUpdateUserFormVisibility}
         >
             {avatarUrl ? (

@@ -1,4 +1,5 @@
 "use client";
+import { FormSkeleton } from "@/Components/Skeletons/Components/FormSkeleton";
 import { Form } from "@/Components/Templates/Form";
 import { EditIcon } from "@/Components/Utils/Icons";
 import { taskFormStateAtom } from "@/atomns/StateAtoms";
@@ -26,7 +27,7 @@ export default function EditTaskForm() {
         taskColumn,
     } = useEditTaskForm();
 
-    if (!taskColumn) return <p>Loading....</p>; //TODO: Skeleton
+    if (!taskColumn) return <FormSkeleton />;
 
     return (
         <Form.Container

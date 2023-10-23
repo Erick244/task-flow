@@ -1,4 +1,5 @@
 "use client";
+import { FormSkeleton } from "@/Components/Skeletons/Components/FormSkeleton";
 import { Form } from "@/Components/Templates/Form";
 import { PlusIcon } from "@/Components/Utils/Icons";
 import { taskFormStateAtom } from "@/atomns/StateAtoms";
@@ -25,7 +26,7 @@ export default function CreateTaskForm() {
         taskColumn,
     } = useCreateTaskForm();
 
-    if (!taskColumn) return <p>Loading....</p>; //TODO: Skeleton
+    if (!taskColumn) return <FormSkeleton />;
 
     return (
         <Form.Container

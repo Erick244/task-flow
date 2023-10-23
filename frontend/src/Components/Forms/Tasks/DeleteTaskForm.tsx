@@ -1,4 +1,5 @@
 "use client";
+import { FormSkeleton } from "@/Components/Skeletons/Components/FormSkeleton";
 import { Form } from "@/Components/Templates/Form";
 import { TrashIcon } from "@/Components/Utils/Icons";
 import { taskFormStateAtom } from "@/atomns/StateAtoms";
@@ -14,7 +15,7 @@ export default function DeleteTaskForm() {
     const { closeDeleteTaskForm, handleDeleteTask, task, taskColumn } =
         useDeleteTaskForm();
 
-    if (!task || !taskColumn) return <p>Loading...</p>; //TODO: Skeleton
+    if (!task || !taskColumn) return <FormSkeleton />;
 
     return (
         <Form.Container

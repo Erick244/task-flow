@@ -18,83 +18,20 @@ interface ClientTaskProps extends HTMLAttributes<HTMLDivElement> {
     task: TaskModel;
 }
 
-type FloatMenuPositionsProps = {
-    x: number;
-    y: number;
-};
-
-// TODO: Clean Code
-
 const ClientTask = forwardRef(
     ({ task, ...rest }: ClientTaskProps, ref: Ref<HTMLDivElement>) => {
-        const [descriptionIsVisible, setDescriptionVisibility] =
-            useState<boolean>(false);
-
         const {
+            descriptionIsVisible,
+            existsDescription,
             floatMenuIsVisible,
             floatMenuPositions,
+            handleCheckBox,
+            handlerEditFloatMenuButton,
+            hanlderDeleteFloatMenuButton,
             renderFloatMenuInElementBottom,
+            toggleDescriptionVisiblity,
             toggleFloatMenuVisibility,
-        } = useFloatMenu();
-
-        const existsDescription = !!task.description;
-
-        function toggleDescriptionVisiblity() {
-            setDescriptionVisibility(!descriptionIsVisible);
-        }
-
-        const setTaskFormState = useSetAtom(taskFormStateAtom);
-
-        async function handlerEditFloatMenuButton() {
-            const taskColumn = await getApiData<TaskColumnModel>(
-                `/taskColumns/findOne/${task.taskColumnId}`
-            );
-
-            setTaskFormState({
-                taskColumn,
-                formAction: FormActions.EDIT,
-                task,
-                visibility: true,
-            });
-        }
-
-        async function hanlderDeleteFloatMenuButton() {
-            const taskColumn = await getApiData<TaskColumnModel>(
-                `/taskColumns/findOne/${task.taskColumnId}`
-            );
-
-            setTaskFormState({
-                taskColumn,
-                formAction: FormActions.DELETE,
-                task,
-                visibility: true,
-            });
-        }
-
-        const { tasks, updateTasksInDnd } = useTasksDndContext();
-
-        async function handleCheckBox() {
-            const newCheckBoxState = !task.isCompleted;
-
-            await patchApiData(`/tasks/${task.id}`, {
-                isCompleted: newCheckBoxState,
-            });
-
-            const taskUpdatedData: TaskModel = {
-                ...task,
-                isCompleted: newCheckBoxState,
-            };
-
-            const updatedTasks = tasks.map((dndTask: TaskModel) => {
-                if (dndTask.id == task.id) {
-                    dndTask = taskUpdatedData;
-                }
-
-                return dndTask;
-            });
-
-            updateTasksInDnd(updatedTasks);
-        }
+        } = useClientTask(task);
 
         return (
             <Task.Root
@@ -148,6 +85,90 @@ const ClientTask = forwardRef(
         );
     }
 );
+
+function useClientTask(task: TaskModel) {
+    const [descriptionIsVisible, setDescriptionVisibility] =
+        useState<boolean>(false);
+
+    const {
+        floatMenuIsVisible,
+        floatMenuPositions,
+        renderFloatMenuInElementBottom,
+        toggleFloatMenuVisibility,
+    } = useFloatMenu();
+
+    const existsDescription = !!task.description;
+
+    function toggleDescriptionVisiblity() {
+        setDescriptionVisibility(!descriptionIsVisible);
+    }
+
+    const setTaskFormState = useSetAtom(taskFormStateAtom);
+
+    async function handlerEditFloatMenuButton() {
+        const taskColumn = await getApiData<TaskColumnModel>(
+            `/taskColumns/findOne/${task.taskColumnId}`
+        );
+
+        setTaskFormState({
+            taskColumn,
+            formAction: FormActions.EDIT,
+            task,
+            visibility: true,
+        });
+    }
+
+    async function hanlderDeleteFloatMenuButton() {
+        const taskColumn = await getApiData<TaskColumnModel>(
+            `/taskColumns/findOne/${task.taskColumnId}`
+        );
+
+        setTaskFormState({
+            taskColumn,
+            formAction: FormActions.DELETE,
+            task,
+            visibility: true,
+        });
+    }
+
+    const { tasks, updateTasksInDnd } = useTasksDndContext();
+
+    async function handleCheckBox() {
+        const newCheckBoxState = !task.isCompleted;
+
+        await patchApiData(`/tasks/${task.id}`, {
+            isCompleted: newCheckBoxState,
+        });
+
+        const taskUpdatedData: TaskModel = {
+            ...task,
+            isCompleted: newCheckBoxState,
+        };
+
+        const updatedTasks = tasks.map((dndTask: TaskModel) => {
+            if (dndTask.id == task.id) {
+                dndTask = taskUpdatedData;
+            }
+
+            return dndTask;
+        });
+
+        updateTasksInDnd(updatedTasks);
+    }
+
+    return {
+        floatMenuPositions,
+        handlerEditFloatMenuButton,
+        hanlderDeleteFloatMenuButton,
+        toggleFloatMenuVisibility,
+        floatMenuIsVisible,
+        descriptionIsVisible,
+        existsDescription,
+        renderFloatMenuInElementBottom,
+        toggleDescriptionVisiblity,
+        handleCheckBox,
+    };
+}
 
 ClientTask.displayName = "ClientTask";
 

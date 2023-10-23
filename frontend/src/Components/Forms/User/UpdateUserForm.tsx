@@ -1,4 +1,5 @@
 "use client";
+import { FormSkeleton } from "@/Components/Skeletons/Components/FormSkeleton";
 import { Form } from "@/Components/Templates/Form";
 import { EditIcon } from "@/Components/Utils/Icons";
 import { updateUserFormVisibilityAtom } from "@/atomns/VisibilityAtoms";
@@ -25,7 +26,7 @@ export function UpdateUserForm() {
         register,
     } = useUpdateUserForm();
 
-    if (!user) return <p>Loading....</p>; //TODO: Skeleton
+    if (!user) return <FormSkeleton />;
 
     const { email, username, avatarUrl } = user;
 
