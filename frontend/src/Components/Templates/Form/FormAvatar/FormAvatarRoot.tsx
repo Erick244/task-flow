@@ -18,11 +18,11 @@ export function FormAvatarRoot({
         <div
             {...rest}
             className={twMerge(
-                "w-full border-2 border-neutral-500 p-2 dark:text-white",
+                "relative w-full border-2 border-neutral-500 p-2 dark:text-white",
                 rest.className
             )}
         >
-            <p className="absolute flex items-center gap-2 text-blue-500">
+            <p className="text-sm sm:text-base absolute left-10 flex items-center gap-2 text-blue-500">
                 {ImageIcon} Drop your image here or select!
             </p>
 

@@ -15,7 +15,7 @@ export default function TaskGoal({
         <h2
             {...rest}
             className={twMerge(
-                "dark:text-white",
+                "dark:text-white overflow-hidden text-ellipsis whitespace-nowrap",
                 lineThrough && "line-through",
                 rest.className
             )}

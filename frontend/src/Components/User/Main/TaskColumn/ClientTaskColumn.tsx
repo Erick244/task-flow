@@ -79,7 +79,7 @@ const ClientTaskColumn = forwardRef(
                     />
                 </CloseArea>
 
-                <div className="flex flex-col gap-7 p-4">{children}</div>
+                <div className="flex flex-col gap-7 p-4 w-full">{children}</div>
             </TaskColumn.Root>
         );
     }

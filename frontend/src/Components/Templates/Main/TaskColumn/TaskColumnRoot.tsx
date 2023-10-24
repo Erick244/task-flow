@@ -12,7 +12,7 @@ const TaskColumnRoot = forwardRef(
                 {...rest}
                 ref={ref}
                 className={twMerge(
-                    "flex-shrink-0 h-4/5 w-full sm:w-80 sm:border-r-2 dark:border-neutral-600 border-neutral-400",
+                    "flex-shrink-0 w-full sm:w-80 sm:border-r-2 dark:border-neutral-600 border-neutral-400",
                     rest.className
                 )}
             >
